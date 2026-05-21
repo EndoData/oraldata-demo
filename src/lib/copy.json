@@ -109,7 +109,7 @@
       {
         "icon": "Cloud",
         "title": "Stockage illimité",
-        "body": "Un stockage illimité de radios, photos, CBCT de vos patients.. Tout, pour toujours"
+        "body": "Un stockage illimité de radios, photos, CBCT de vos patients.. Tout, pour toujours."
       },
       {
         "icon": "Mic",
@@ -145,8 +145,8 @@
   },
   "specialties": {
     "eyebrow": "Conçu pour vos spécialités",
-    "title": "Un logiciel.\nQuatre métiers.",
-    "sub": "OralData s'adapte aux gestes, aux protocoles et aux patients de chaque discipline.",
+    "title": "Un logiciel.\nQuatre spécialistes.",
+    "sub": "OralData est adapté aux gestes et aux protocoles de chaque discipline.",
     "tabs": [
       {
         "id": "endo",
