@@ -125,6 +125,18 @@ body {
   );
 }
 
+@keyframes mic-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.035); }
+}
+
+.mic-pulse-slow {
+  animation: mic-pulse 2.6s ease-in-out infinite;
+}
+.mic-pulse-fast {
+  animation: mic-pulse 1.6s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

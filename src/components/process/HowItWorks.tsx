@@ -340,8 +340,12 @@ function MicMock() {
 
   const isRecording = phase === "recording";
 
+  function handleClick() {
+    setPhase((p) => (p === "recording" ? "idle" : "recording"));
+  }
+
   return (
-    <div className="relative w-full max-w-sm aspect-square flex items-center justify-center">
+    <div className="relative w-full max-w-sm aspect-square flex items-center justify-center select-none">
       <motion.div
         animate={{
           background: isRecording
@@ -352,29 +356,32 @@ function MicMock() {
         className="absolute inset-10 rounded-full blur-3xl"
       />
 
-      {/* Ondas pulsantes — só no estado 'recording' */}
-      <AnimatePresence>
-        {isRecording && !reducedMotion
-          ? Array.from({ length: RING_COUNT }).map((_, i) => (
-              <motion.span
-                key={`ring-${i}-${phase}`}
-                aria-hidden
-                initial={{ scale: 1, opacity: 0.55 }}
-                animate={{ scale: 1.9, opacity: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: 2.4,
-                  repeat: Infinity,
-                  ease: "easeOut",
-                  delay: (i * 2.4) / RING_COUNT,
-                }}
-                className="absolute w-40 h-40 lg:w-48 lg:h-48 rounded-full bg-red-500/25 border border-red-400/50"
-              />
-            ))
-          : null}
-      </AnimatePresence>
+      {/* Ondas pulsantes — render condicional puro, sem AnimatePresence */}
+      {isRecording && !reducedMotion
+        ? Array.from({ length: RING_COUNT }).map((_, i) => (
+            <motion.span
+              key={`ring-${i}`}
+              aria-hidden
+              initial={{ scale: 1, opacity: 0 }}
+              animate={{ scale: 1.9, opacity: [0, 0.55, 0] }}
+              transition={{
+                duration: 2.4,
+                repeat: Infinity,
+                ease: "easeOut",
+                delay: (i * 2.4) / RING_COUNT,
+                times: [0, 0.1, 1],
+              }}
+              className="absolute w-40 h-40 lg:w-48 lg:h-48 rounded-full bg-red-500/25 border border-red-400/50 pointer-events-none"
+            />
+          ))
+        : null}
 
-      <motion.div
+      {/* Botão clicável — separar transição de cor (motion) do pulse de scale (CSS animation) */}
+      <motion.button
+        type="button"
+        onClick={handleClick}
+        aria-label={isRecording ? "Arrêter l'enregistrement" : "Démarrer l'enregistrement"}
+        aria-pressed={isRecording}
         animate={{
           background: isRecording
             ? "linear-gradient(135deg, rgb(248,113,113), rgb(239,68,68), rgb(185,28,28))"
@@ -382,22 +389,17 @@ function MicMock() {
           boxShadow: isRecording
             ? "0 24px 60px -18px rgba(220,38,38,0.55)"
             : "0 24px 60px -18px rgba(23,74,98,0.45)",
-          scale: reducedMotion ? 1 : isRecording ? [1, 1.04, 1] : [1, 1.02, 1],
         }}
-        transition={{
-          background: { duration: 0.5, ease: "easeOut" },
-          boxShadow: { duration: 0.5, ease: "easeOut" },
-          scale: reducedMotion
-            ? { duration: 0 }
-            : {
-                duration: isRecording ? 1.6 : 2.6,
-                repeat: Infinity,
-                ease: "easeInOut",
-              },
-        }}
-        className="relative w-40 h-40 lg:w-48 lg:h-48 rounded-full flex items-center justify-center"
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className={`relative w-40 h-40 lg:w-48 lg:h-48 rounded-full flex items-center justify-center cursor-pointer focus:outline-none focus-visible:ring-4 focus-visible:ring-brand-300/60 ${
+          reducedMotion
+            ? ""
+            : isRecording
+              ? "mic-pulse-fast"
+              : "mic-pulse-slow"
+        }`}
       >
-        <div className="absolute inset-3 rounded-full bg-gradient-to-br from-white/15 to-transparent" />
+        <span aria-hidden className="absolute inset-3 rounded-full bg-gradient-to-br from-white/15 to-transparent" />
         <AnimatePresence mode="wait" initial={false}>
           {isRecording ? (
             <motion.span
@@ -409,7 +411,7 @@ function MicMock() {
                   : {
                       opacity: 1,
                       scale: 1,
-                      transition: { duration: 0.3, ease: "easeOut" },
+                      transition: { duration: 0.25, ease: "easeOut" },
                     }
               }
               exit={
@@ -418,7 +420,7 @@ function MicMock() {
                   : {
                       opacity: 0,
                       scale: 0.6,
-                      transition: { duration: 0.2, ease: "easeIn" },
+                      transition: { duration: 0.18, ease: "easeIn" },
                     }
               }
               className="relative"
@@ -438,7 +440,7 @@ function MicMock() {
                   : {
                       opacity: 1,
                       scale: 1,
-                      transition: { duration: 0.3, ease: "easeOut" },
+                      transition: { duration: 0.25, ease: "easeOut" },
                     }
               }
               exit={
@@ -447,7 +449,7 @@ function MicMock() {
                   : {
                       opacity: 0,
                       scale: 0.6,
-                      transition: { duration: 0.2, ease: "easeIn" },
+                      transition: { duration: 0.18, ease: "easeIn" },
                     }
               }
               className="relative"
@@ -459,9 +461,9 @@ function MicMock() {
             </motion.span>
           )}
         </AnimatePresence>
-      </motion.div>
+      </motion.button>
 
-      <div className="absolute top-6 right-6 lg:top-8 lg:right-10 w-10 h-10 rounded-full bg-white border hairline border-[color:var(--color-line)] shadow-[var(--shadow-soft)] flex items-center justify-center z-10">
+      <div className="absolute top-6 right-6 lg:top-8 lg:right-10 w-10 h-10 rounded-full bg-white border hairline border-[color:var(--color-line)] shadow-[var(--shadow-soft)] flex items-center justify-center z-10 pointer-events-none">
         <ShieldCheck className="w-5 h-5 text-emerald-500" strokeWidth={1.8} />
       </div>
     </div>
