@@ -323,26 +323,44 @@ function SplitStepWithToggle({
 
 function MicMock() {
   const reducedMotion = useReducedMotion();
+  const RING_COUNT = 3;
   return (
     <div className="relative w-full max-w-sm aspect-square flex items-center justify-center">
-      <div className="absolute inset-10 rounded-full bg-gradient-to-br from-brand-200/30 via-brand-400/30 to-brand-600/30 blur-3xl" />
+      <div className="absolute inset-10 rounded-full bg-gradient-to-br from-rose-200/40 via-red-300/40 to-red-500/40 blur-3xl" />
+
+      {/* Ondas pulsantes saindo do círculo (efeito 'alguém falando') */}
+      {!reducedMotion
+        ? Array.from({ length: RING_COUNT }).map((_, i) => (
+            <motion.span
+              key={`ring-${i}`}
+              aria-hidden
+              initial={{ scale: 1, opacity: 0.55 }}
+              animate={{ scale: 1.9, opacity: 0 }}
+              transition={{
+                duration: 2.4,
+                repeat: Infinity,
+                ease: "easeOut",
+                delay: (i * 2.4) / RING_COUNT,
+              }}
+              className="absolute w-40 h-40 lg:w-48 lg:h-48 rounded-full bg-red-500/25 border border-red-400/50"
+            />
+          ))
+        : null}
+
       <motion.div
-        animate={
-          reducedMotion
-            ? undefined
-            : { scale: [1, 1.04, 1] }
-        }
+        animate={reducedMotion ? undefined : { scale: [1, 1.04, 1] }}
         transition={
           reducedMotion
             ? undefined
-            : { duration: 2.4, repeat: Infinity, ease: "easeInOut" }
+            : { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
         }
-        className="relative w-40 h-40 lg:w-48 lg:h-48 rounded-full bg-gradient-to-br from-brand-400 via-brand-500 to-brand-700 flex items-center justify-center shadow-[0_24px_60px_-18px_rgba(23,74,98,0.45)]"
+        className="relative w-40 h-40 lg:w-48 lg:h-48 rounded-full bg-gradient-to-br from-red-400 via-red-500 to-red-700 flex items-center justify-center shadow-[0_24px_60px_-18px_rgba(220,38,38,0.55)]"
       >
         <div className="absolute inset-3 rounded-full bg-gradient-to-br from-white/15 to-transparent" />
         <Mic className="relative w-14 h-14 lg:w-16 lg:h-16 text-white" strokeWidth={1.5} />
       </motion.div>
-      <div className="absolute top-6 right-6 lg:top-8 lg:right-10 w-10 h-10 rounded-full bg-white border hairline border-[color:var(--color-line)] shadow-[var(--shadow-soft)] flex items-center justify-center">
+
+      <div className="absolute top-6 right-6 lg:top-8 lg:right-10 w-10 h-10 rounded-full bg-white border hairline border-[color:var(--color-line)] shadow-[var(--shadow-soft)] flex items-center justify-center z-10">
         <ShieldCheck className="w-5 h-5 text-emerald-500" strokeWidth={1.8} />
       </div>
     </div>
@@ -477,7 +495,7 @@ function ChecklistMock() {
             </ul>
 
             {/* Popover "Type" — alinhado verticalmente com a linha Fracture do Examen (5ª linha) */}
-            <div className="absolute top-[10rem] lg:top-[10.5rem] left-0 lg:-left-6 z-10 hidden md:block">
+            <div className="absolute top-[9rem] lg:top-[9.5rem] left-0 lg:-left-6 z-10 hidden md:block">
               <div className="relative bg-white rounded-lg border border-sky-200 shadow-[0_18px_40px_-12px_rgba(15,26,34,0.25)] px-3 py-2">
                 <div className="grid grid-cols-[auto_1fr] gap-x-3 items-center">
                   <span className="font-medium text-ink text-xs">Type</span>
