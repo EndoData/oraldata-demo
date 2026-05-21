@@ -58,7 +58,7 @@ export function HowItWorks() {
       id="process"
       className="py-24 lg:py-32 bg-surface-2 border-y hairline border-y-[color:var(--color-line)]"
     >
-      <div className="mx-auto max-w-7xl px-6 lg:px-10">
+      <div className="mx-auto max-w-[1400px] px-6 lg:px-10">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -227,8 +227,11 @@ function SplitStepWithToggle({
         </div>
       </motion.div>
 
-      <motion.div variants={fadeUp} className="space-y-12 lg:space-y-16">
-        <div className="relative min-h-[20rem] lg:min-h-[24rem] flex items-center justify-center">
+      <motion.div
+        variants={fadeUp}
+        className="grid lg:grid-cols-[1.7fr_1fr] gap-10 lg:gap-14 items-center"
+      >
+        <div className="relative min-w-0 min-h-[20rem] lg:min-h-[28rem] flex items-center justify-center">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={active?.id ?? "empty"}
@@ -262,18 +265,17 @@ function SplitStepWithToggle({
           role="tabpanel"
           id={`${tablistId}-${active?.id}-panel`}
           aria-labelledby={`${tablistId}-${active?.id}-tab`}
-          className="relative max-w-5xl mx-auto"
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.ol
               key={active?.id ?? "empty-list"}
-              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
+              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: 16 }}
               animate={
                 reducedMotion
                   ? { opacity: 1 }
                   : {
                       opacity: 1,
-                      y: 0,
+                      x: 0,
                       transition: { duration: 0.45, ease: easeOut, staggerChildren: 0.08 },
                     }
               }
@@ -282,20 +284,15 @@ function SplitStepWithToggle({
                   ? { opacity: 0 }
                   : {
                       opacity: 0,
-                      y: -8,
+                      x: -8,
                       transition: { duration: 0.2, ease: easeOut },
                     }
               }
-              className="grid md:grid-cols-3 gap-8 lg:gap-12 relative"
+              className="relative pl-10 lg:pl-12 space-y-7 before:absolute before:left-[18px] lg:before:left-[22px] before:top-3 before:bottom-3 before:w-px before:bg-[color:var(--color-line)]"
             >
-              {/* Linha conectora horizontal (desktop) */}
-              <span
-                aria-hidden
-                className="hidden md:block absolute top-[18px] left-[14%] right-[14%] h-px bg-gradient-to-r from-transparent via-[color:var(--color-line)] to-transparent"
-              />
               {active?.steps.map((sub, k) => (
-                <li key={sub.number} className="relative text-center md:text-left">
-                  <span className="relative inline-flex items-center justify-center w-9 h-9 rounded-full bg-surface border hairline border-[color:var(--color-line)] font-serif text-sm text-brand-700 shadow-[var(--shadow-soft)] mb-4">
+                <li key={sub.number} className="relative">
+                  <span className="absolute -left-10 lg:-left-12 top-0.5 w-9 h-9 rounded-full bg-surface border hairline border-[color:var(--color-line)] flex items-center justify-center font-serif text-sm text-brand-700 shadow-[var(--shadow-soft)]">
                     {sub.number}
                   </span>
                   <h4 className="font-medium text-ink text-base lg:text-lg leading-snug">
