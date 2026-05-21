@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Montserrat, Fraunces } from "next/font/google";
+import { EditorProvider } from "@/lib/editor";
 import "./globals.css";
 
 const sans = Montserrat({
@@ -47,7 +49,9 @@ export default function RootLayout({
       className={`${sans.variable} ${serif.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-canvas text-ink font-sans selection:bg-brand-200 selection:text-brand-900">
-        {children}
+        <Suspense fallback={null}>
+          <EditorProvider>{children}</EditorProvider>
+        </Suspense>
       </body>
     </html>
   );

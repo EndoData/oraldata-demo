@@ -1,4 +1,5 @@
 import { copy } from "@/lib/copy";
+import { E } from "@/components/editor/EditableText";
 
 export function Footer() {
   const f = copy.footer;
@@ -17,20 +18,25 @@ export function Footer() {
               </span>
             </div>
             <p className="mt-5 font-serif text-lg text-white/70 max-w-xs leading-snug tracking-tight">
-              {f.tagline}
+              <E path="footer.tagline">{f.tagline}</E>
             </p>
           </div>
 
-          {f.columns.map((col) => (
-            <div key={col.title}>
+          {f.columns.map((col, i) => (
+            <div key={`${i}-${col.title}`}>
               <h4 className="text-xs uppercase tracking-[0.16em] text-white/50 mb-5">
-                {col.title}
+                <E path={`footer.columns[${i}].title`} multiline={false}>{col.title}</E>
               </h4>
               <ul className="space-y-3">
-                {col.links.map((l) => (
-                  <li key={l}>
+                {col.links.map((l, j) => (
+                  <li key={`${j}-${l}`}>
                     <span className="text-sm text-white/70 cursor-default">
-                      {l}
+                      <E
+                        path={`footer.columns[${i}].links[${j}]`}
+                        multiline={false}
+                      >
+                        {l}
+                      </E>
                     </span>
                   </li>
                 ))}
@@ -40,7 +46,9 @@ export function Footer() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs text-white/50">
-          <span>{f.copyright}</span>
+          <span>
+            <E path="footer.copyright" multiline={false}>{f.copyright}</E>
+          </span>
           <span>Pitch conçu par KRATA.</span>
         </div>
       </div>

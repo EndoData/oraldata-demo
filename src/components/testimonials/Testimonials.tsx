@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce, easeOut } from "@/lib/motion";
+import { E } from "@/components/editor/EditableText";
 
 const PER_PAGE = 3;
 
@@ -52,20 +53,20 @@ export function Testimonials() {
           className="max-w-2xl mx-auto text-center"
         >
           <motion.span variants={fadeUp} className="eyebrow">
-            {t.eyebrow}
+            <E path="testimonials.eyebrow" multiline={false}>{t.eyebrow}</E>
           </motion.span>
           <motion.h2
             variants={fadeUp}
             className="headline mt-5 text-[clamp(2rem,4.5vw,3.75rem)] text-ink whitespace-pre-line"
           >
-            {t.title}
+            <E path="testimonials.title">{t.title}</E>
           </motion.h2>
           <motion.div
             variants={fadeUp}
             className="mt-4 inline-flex items-center gap-2 text-sm text-ink-mute"
           >
             <InstagramIcon />
-            {t.handle}
+            <E path="testimonials.handle" multiline={false}>{t.handle}</E>
           </motion.div>
         </motion.div>
 
@@ -127,27 +128,37 @@ export function Testimonials() {
                 }
                 className="grid md:grid-cols-3 gap-6"
               >
-                {visible.map((item, index) => (
-                  <li
-                    key={`${page}-${index}`}
-                    className="relative rounded-2xl bg-surface p-8 border hairline border-[color:var(--color-line)] shadow-[var(--shadow-soft)]"
-                  >
-                    <Quote
-                      className="w-7 h-7 text-brand-300 mb-4"
-                      strokeWidth={1.5}
-                    />
-                    <p className="font-serif text-lg text-ink leading-relaxed tracking-tight">
-                      {"« "}
-                      {item.quote}
-                      {" »"}
-                    </p>
-                    <div className="mt-6 pt-6 border-t hairline border-t-[color:var(--color-line)]">
-                      <div className="font-medium text-ink text-sm">
-                        {item.author}
+                {visible.map((item, index) => {
+                  const globalIndex = start + index;
+                  return (
+                    <li
+                      key={`${page}-${index}`}
+                      className="relative rounded-2xl bg-surface p-8 border hairline border-[color:var(--color-line)] shadow-[var(--shadow-soft)]"
+                    >
+                      <Quote
+                        className="w-7 h-7 text-brand-300 mb-4"
+                        strokeWidth={1.5}
+                      />
+                      <p className="font-serif text-lg text-ink leading-relaxed tracking-tight">
+                        {"« "}
+                        <E path={`testimonials.items[${globalIndex}].quote`}>
+                          {item.quote}
+                        </E>
+                        {" »"}
+                      </p>
+                      <div className="mt-6 pt-6 border-t hairline border-t-[color:var(--color-line)]">
+                        <div className="font-medium text-ink text-sm">
+                          <E
+                            path={`testimonials.items[${globalIndex}].author`}
+                            multiline={false}
+                          >
+                            {item.author}
+                          </E>
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
+                    </li>
+                  );
+                })}
               </motion.ul>
             </AnimatePresence>
           </div>

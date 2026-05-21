@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
+import { E } from "@/components/editor/EditableText";
 
 const iconMap: Record<string, LucideIcon> = {
   FileText,
@@ -39,20 +40,20 @@ export function FeatureGrid() {
           className="max-w-3xl"
         >
           <motion.span variants={fadeUp} className="eyebrow">
-            {f.eyebrow}
+            <E path="features.eyebrow" multiline={false}>{f.eyebrow}</E>
           </motion.span>
           <motion.h2
             variants={fadeUp}
             className="headline mt-5 text-[clamp(2rem,4.5vw,3.75rem)] text-ink whitespace-pre-line"
           >
-            {f.title}
+            <E path="features.title">{f.title}</E>
           </motion.h2>
           {f.subtitle ? (
             <motion.p
               variants={fadeUp}
               className="mt-6 text-lg text-ink-soft leading-relaxed max-w-2xl"
             >
-              {f.subtitle}
+              <E path="features.subtitle">{f.subtitle}</E>
             </motion.p>
           ) : null}
         </motion.div>
@@ -64,11 +65,11 @@ export function FeatureGrid() {
           variants={stagger(0.06)}
           className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
         >
-          {f.items.map((item) => {
+          {f.items.map((item, i) => {
             const Icon = iconMap[item.icon] ?? FileText;
             return (
               <motion.li
-                key={item.title}
+                key={`${i}-${item.title}`}
                 variants={fadeUp}
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3 }}
@@ -78,10 +79,10 @@ export function FeatureGrid() {
                   <Icon className="w-5 h-5 text-brand-700" strokeWidth={1.75} />
                 </div>
                 <h3 className="font-serif text-xl text-ink tracking-tight mb-2">
-                  {item.title}
+                  <E path={`features.items[${i}].title`} multiline={false}>{item.title}</E>
                 </h3>
                 <p className="text-sm text-ink-soft leading-relaxed">
-                  {item.body}
+                  <E path={`features.items[${i}].body`}>{item.body}</E>
                 </p>
               </motion.li>
             );

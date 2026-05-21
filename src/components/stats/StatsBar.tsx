@@ -3,7 +3,8 @@
 import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { copy } from "@/lib/copy";
-import { easeOut, stagger, fadeUp, viewportOnce } from "@/lib/motion";
+import { stagger, fadeUp, viewportOnce } from "@/lib/motion";
+import { E } from "@/components/editor/EditableText";
 
 function Counter({ value, suffix }: { value: number; suffix: string }) {
   const ref = useRef<HTMLSpanElement>(null);
@@ -42,9 +43,9 @@ export function StatsBar() {
         variants={stagger(0.12)}
         className="mx-auto max-w-7xl px-6 lg:px-10 grid grid-cols-2 md:grid-cols-5 gap-10 md:gap-6"
       >
-        {copy.stats.map((s) => (
+        {copy.stats.map((s, i) => (
           <motion.div
-            key={s.label}
+            key={`${i}-${s.label}`}
             variants={fadeUp}
             className="text-left md:text-center"
           >
@@ -52,7 +53,7 @@ export function StatsBar() {
               <Counter value={s.value} suffix={s.suffix} />
             </div>
             <div className="mt-2 text-xs md:text-sm uppercase tracking-[0.14em] text-ink-mute font-medium">
-              {s.label}
+              <E path={`stats[${i}].label`} multiline={false}>{s.label}</E>
             </div>
           </motion.div>
         ))}

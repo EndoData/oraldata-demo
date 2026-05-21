@@ -11,6 +11,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { copy } from "@/lib/copy";
 import { ToothFallback } from "./ToothFallback";
+import { E } from "@/components/editor/EditableText";
 
 // Each specialty is revealed in 4 stages. These progress targets are aligned
 // with the opacity transforms in every scene (see ToothScene / ImplantScene /
@@ -157,11 +158,15 @@ export function SpecialtiesSection() {
       <div className="relative mx-auto max-w-7xl px-6 lg:px-10">
         {/* Header */}
         <div className="max-w-2xl mx-auto text-center mb-10 lg:mb-14">
-          <span className="eyebrow !text-brand-200">{s.eyebrow}</span>
+          <span className="eyebrow !text-brand-200">
+            <E path="specialties.eyebrow" multiline={false}>{s.eyebrow}</E>
+          </span>
           <h2 className="headline mt-5 text-[clamp(2rem,4.5vw,3.75rem)] text-white whitespace-pre-line">
-            {s.title}
+            <E path="specialties.title">{s.title}</E>
           </h2>
-          <p className="mt-5 text-white/70 leading-relaxed text-lg">{s.sub}</p>
+          <p className="mt-5 text-white/70 leading-relaxed text-lg">
+            <E path="specialties.sub">{s.sub}</E>
+          </p>
         </div>
 
         {/* Tabs — specialty selector */}
@@ -196,7 +201,9 @@ export function SpecialtiesSection() {
                     transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                   />
                 )}
-                <span className="relative">{tab.label}</span>
+                <span className="relative">
+                  <E path={`specialties.tabs[${i}].label`} multiline={false}>{tab.label}</E>
+                </span>
               </button>
             );
           })}
@@ -237,7 +244,12 @@ export function SpecialtiesSection() {
               className="absolute bottom-4 left-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-xs uppercase tracking-[0.18em] text-white/90"
             >
               <span className="inline-block w-1.5 h-1.5 rounded-full bg-accent-500 animate-pulse" />
-              {currentStage.label}
+              <E
+                path={`specialties.tabs[${activeTab}].stages[${activeStage}].label`}
+                multiline={false}
+              >
+                {currentStage.label}
+              </E>
             </motion.div>
           </div>
 
@@ -257,13 +269,13 @@ export function SpecialtiesSection() {
                 transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
                 <div className="text-xs uppercase tracking-[0.18em] text-brand-200 mb-3">
-                  {active.label}
+                  <E path={`specialties.tabs[${activeTab}].label`} multiline={false}>{active.label}</E>
                 </div>
                 <h3 className="font-serif text-3xl lg:text-4xl tracking-tight text-white">
-                  {active.title}
+                  <E path={`specialties.tabs[${activeTab}].title`} multiline={false}>{active.title}</E>
                 </h3>
                 <p className="mt-5 text-white/75 leading-relaxed text-base max-w-lg">
-                  {active.body}
+                  <E path={`specialties.tabs[${activeTab}].body`}>{active.body}</E>
                 </p>
               </motion.div>
             </AnimatePresence>
@@ -278,7 +290,12 @@ export function SpecialtiesSection() {
                 transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 className="mt-8 text-sm text-accent-500 font-medium"
               >
-                {currentStage.hint}
+                <E
+                  path={`specialties.tabs[${activeTab}].stages[${activeStage}].hint`}
+                  multiline={false}
+                >
+                  {currentStage.hint}
+                </E>
               </motion.div>
             </AnimatePresence>
 

@@ -5,6 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Mic, ShieldCheck, ListChecks } from "lucide-react";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce, easeOut } from "@/lib/motion";
+import { E } from "@/components/editor/EditableText";
 
 type ProcessStep = (typeof copy.process.steps)[number];
 
@@ -53,28 +54,28 @@ export function HowItWorks() {
           className="max-w-2xl mx-auto text-center"
         >
           <motion.span variants={fadeUp} className="eyebrow">
-            {p.eyebrow}
+            <E path="process.eyebrow" multiline={false}>{p.eyebrow}</E>
           </motion.span>
           <motion.h2
             variants={fadeUp}
             className="headline mt-5 text-[clamp(2rem,4.5vw,3.75rem)] text-ink whitespace-pre-line"
           >
-            {p.title}
+            <E path="process.title">{p.title}</E>
           </motion.h2>
           <motion.p
             variants={fadeUp}
             className="mt-5 text-ink-soft text-lg leading-relaxed"
           >
-            {p.sub}
+            <E path="process.sub">{p.sub}</E>
           </motion.p>
         </motion.div>
 
         <div className="mt-16 space-y-16 lg:space-y-24">
-          {p.steps.map((step) =>
+          {p.steps.map((step, i) =>
             hasVariants(step) ? (
-              <SplitStepWithToggle key={step.number} step={step} />
+              <SplitStepWithToggle key={step.number} step={step} index={i} />
             ) : (
-              <SimpleStep key={step.number} step={step} />
+              <SimpleStep key={step.number} step={step} index={i} />
             ),
           )}
         </div>
@@ -83,7 +84,7 @@ export function HowItWorks() {
   );
 }
 
-function SimpleStep({ step }: { step: StepBase }) {
+function SimpleStep({ step, index }: { step: StepBase; index: number }) {
   return (
     <motion.div
       initial="hidden"
@@ -99,17 +100,23 @@ function SimpleStep({ step }: { step: StepBase }) {
       </motion.div>
       <motion.div variants={fadeUp} className="lg:col-span-10">
         <h3 className="font-serif text-2xl lg:text-3xl text-ink tracking-tight">
-          {step.title}
+          <E path={`process.steps[${index}].title`} multiline={false}>{step.title}</E>
         </h3>
         <p className="mt-3 text-base text-ink-soft leading-relaxed max-w-2xl">
-          {step.body}
+          <E path={`process.steps[${index}].body`}>{step.body}</E>
         </p>
       </motion.div>
     </motion.div>
   );
 }
 
-function SplitStepWithToggle({ step }: { step: StepWithVariants }) {
+function SplitStepWithToggle({
+  step,
+  index,
+}: {
+  step: StepWithVariants;
+  index: number;
+}) {
   const variants = step.variants;
   const [activeId, setActiveId] = useState<string>(variants[0]?.id ?? "simple");
   const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
@@ -152,11 +159,18 @@ function SplitStepWithToggle({ step }: { step: StepWithVariants }) {
     >
       <motion.div variants={fadeUp} className="text-center mb-8">
         <h3 className="font-serif text-2xl lg:text-3xl text-ink tracking-tight">
-          {step.number} — {step.title}
+          {step.number} —{" "}
+          <E path={`process.steps[${index}].title`} multiline={false}>
+            {step.title}
+          </E>
         </h3>
         {active?.tagline ? (
           <p className="mt-3 text-base text-ink-soft leading-relaxed max-w-xl mx-auto">
-            {active.tagline}
+            <E
+              path={`process.steps[${index}].variants[${activeIndex}].tagline`}
+            >
+              {active.tagline}
+            </E>
           </p>
         ) : null}
 
@@ -167,7 +181,7 @@ function SplitStepWithToggle({ step }: { step: StepWithVariants }) {
           className="mt-6 inline-flex items-center gap-1 p-1 rounded-full bg-surface border hairline border-[color:var(--color-line)] shadow-[var(--shadow-soft)]"
           id={tablistId}
         >
-          {variants.map((variant) => {
+          {variants.map((variant, vIdx) => {
             const selected = variant.id === active?.id;
             return (
               <button
@@ -188,7 +202,12 @@ function SplitStepWithToggle({ step }: { step: StepWithVariants }) {
                     : "text-ink-soft hover:text-ink"
                 }`}
               >
-                {variant.label}
+                <E
+                  path={`process.steps[${index}].variants[${vIdx}].label`}
+                  multiline={false}
+                >
+                  {variant.label}
+                </E>
               </button>
             );
           })}
@@ -259,16 +278,25 @@ function SplitStepWithToggle({ step }: { step: StepWithVariants }) {
               }
               className="relative pl-8 lg:pl-10 space-y-8 before:absolute before:left-[14px] lg:before:left-[18px] before:top-2 before:bottom-2 before:w-px before:bg-[color:var(--color-line)]"
             >
-              {active?.steps.map((sub) => (
+              {active?.steps.map((sub, k) => (
                 <li key={sub.number} className="relative">
                   <span className="absolute -left-8 lg:-left-10 top-1 w-7 h-7 lg:w-9 lg:h-9 rounded-full bg-surface border hairline border-[color:var(--color-line)] flex items-center justify-center font-serif text-xs lg:text-sm text-brand-700">
                     {sub.number}
                   </span>
                   <h4 className="font-medium text-ink text-base lg:text-lg leading-snug">
-                    {sub.title}
+                    <E
+                      path={`process.steps[${index}].variants[${activeIndex}].steps[${k}].title`}
+                      multiline={false}
+                    >
+                      {sub.title}
+                    </E>
                   </h4>
                   <p className="mt-2 text-sm text-ink-soft leading-relaxed max-w-md">
-                    {sub.body}
+                    <E
+                      path={`process.steps[${index}].variants[${activeIndex}].steps[${k}].body`}
+                    >
+                      {sub.body}
+                    </E>
                   </p>
                 </li>
               ))}

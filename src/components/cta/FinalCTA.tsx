@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Calendar } from "lucide-react";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
+import { E } from "@/components/editor/EditableText";
 
 export function FinalCTA() {
   const c = copy.finalCta;
@@ -28,21 +29,21 @@ export function FinalCTA() {
         />
 
         <motion.span variants={fadeUp} className="eyebrow">
-          {c.eyebrow}
+          <E path="finalCta.eyebrow" multiline={false}>{c.eyebrow}</E>
         </motion.span>
 
         <motion.h2
           variants={fadeUp}
           className="headline mt-6 text-[clamp(2.5rem,5.5vw,4.5rem)] text-ink whitespace-pre-line"
         >
-          {c.title}
+          <E path="finalCta.title">{c.title}</E>
         </motion.h2>
 
         <motion.p
           variants={fadeUp}
           className="mt-7 text-lg text-ink-soft leading-relaxed max-w-xl mx-auto"
         >
-          {c.sub}
+          <E path="finalCta.sub">{c.sub}</E>
         </motion.p>
 
         <motion.div
@@ -53,14 +54,14 @@ export function FinalCTA() {
             href="#top"
             className="btn-accent inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-semibold"
           >
-            {c.primary}
+            <E path="finalCta.primary" multiline={false}>{c.primary}</E>
             <ArrowRight className="w-4 h-4" />
           </a>
           <a
             href="#features"
             className="inline-flex items-center gap-2 px-6 py-4 rounded-full text-sm font-medium text-ink hover:text-brand-700 transition-colors"
           >
-            {c.secondary}
+            <E path="finalCta.secondary" multiline={false}>{c.secondary}</E>
           </a>
         </motion.div>
 
@@ -69,7 +70,9 @@ export function FinalCTA() {
           className="mt-10 inline-flex items-start gap-2 text-xs text-ink-mute max-w-lg text-left"
         >
           <Calendar className="w-3.5 h-3.5 text-brand-600 mt-0.5 shrink-0" />
-          <span>{c.small}</span>
+          <span>
+            <E path="finalCta.small">{c.small}</E>
+          </span>
         </motion.p>
       </motion.div>
     </section>

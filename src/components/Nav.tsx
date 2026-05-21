@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { copy } from "@/lib/copy";
 import { motion } from "framer-motion";
+import { E } from "@/components/editor/EditableText";
 
 export function Nav() {
   return (
@@ -25,13 +26,13 @@ export function Nav() {
         </a>
 
         <nav className="hidden md:flex items-center gap-8">
-          {copy.nav.links.map((link) => (
+          {copy.nav.links.map((link, i) => (
             <a
               key={link.href}
               href={link.href}
               className="text-sm text-ink-soft hover:text-ink transition-colors"
             >
-              {link.label}
+              <E path={`nav.links[${i}].label`} multiline={false}>{link.label}</E>
             </a>
           ))}
         </nav>
@@ -40,7 +41,7 @@ export function Nav() {
           href="#top"
           className="btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
         >
-          {copy.nav.primary}
+          <E path="nav.primary" multiline={false}>{copy.nav.primary}</E>
         </a>
       </div>
     </motion.header>

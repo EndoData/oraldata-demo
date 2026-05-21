@@ -5,6 +5,7 @@ import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { copy } from "@/lib/copy";
 import { CalendarMock } from "./CalendarMock";
 import { fadeUp, easeOut } from "@/lib/motion";
+import { E } from "@/components/editor/EditableText";
 
 const nfFR = new Intl.NumberFormat("fr-FR");
 function formatCompact(value: number): string {
@@ -45,7 +46,7 @@ export function Hero() {
             className="eyebrow inline-flex items-center gap-2"
           >
             <span className="inline-block w-6 h-px bg-brand-600" />
-            {h.eyebrow}
+            <E path="hero.eyebrow" multiline={false}>{h.eyebrow}</E>
           </motion.span>
 
           <motion.h1
@@ -54,7 +55,7 @@ export function Hero() {
             variants={fadeUp}
             className="headline mt-6 text-[clamp(2.75rem,6vw,5.25rem)] text-ink whitespace-pre-line"
           >
-            {h.headline}
+            <E path="hero.headline">{h.headline}</E>
           </motion.h1>
 
           <motion.p
@@ -63,7 +64,7 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.15, ease: easeOut }}
             className="mt-7 text-lg text-ink-soft max-w-xl leading-relaxed"
           >
-            {h.sub}
+            <E path="hero.sub">{h.sub}</E>
           </motion.p>
 
           <motion.div
@@ -73,12 +74,12 @@ export function Hero() {
             className="mt-6 flex flex-wrap gap-2"
             aria-label="Spécialités couvertes"
           >
-            {h.specialties.map((s) => (
+            {h.specialties.map((s, i) => (
               <span
-                key={s}
+                key={`${i}-${s}`}
                 className="inline-flex items-center px-3 py-1.5 rounded-full bg-brand-50 border hairline border-[color:var(--color-brand-100)] text-xs font-medium text-brand-800 tracking-wide"
               >
-                {s}
+                <E path={`hero.specialties[${i}]`} multiline={false}>{s}</E>
               </span>
             ))}
           </motion.div>
@@ -93,14 +94,14 @@ export function Hero() {
               href="#top"
               className="btn-primary inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-medium"
             >
-              {h.primaryCta}
+              <E path="hero.primaryCta" multiline={false}>{h.primaryCta}</E>
               <ArrowRight className="w-4 h-4" />
             </a>
             <a
               href="#features"
               className="inline-flex items-center gap-2 px-5 py-3.5 rounded-full text-sm font-medium text-ink hover:text-brand-700 transition-colors"
             >
-              {h.secondaryCta}
+              <E path="hero.secondaryCta" multiline={false}>{h.secondaryCta}</E>
             </a>
           </motion.div>
 
@@ -123,12 +124,12 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.4, ease: easeOut }}
             className="mt-6 flex flex-wrap gap-x-6 gap-y-3 text-sm text-ink-soft"
           >
-            {h.badges.map((b) => (
-              <li key={b} className="inline-flex items-center gap-2">
+            {h.badges.map((b, i) => (
+              <li key={`${i}-${b}`} className="inline-flex items-center gap-2">
                 <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-brand-100">
                   <Check className="w-3 h-3 text-brand-700" strokeWidth={3} />
                 </span>
-                {b}
+                <E path={`hero.badges[${i}]`} multiline={false}>{b}</E>
               </li>
             ))}
           </motion.ul>

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
+import { E } from "@/components/editor/EditableText";
 
 type Member = (typeof copy.team.members)[number];
 
@@ -20,19 +21,19 @@ export function FoundersGrid() {
           className="max-w-2xl mx-auto text-center"
         >
           <motion.span variants={fadeUp} className="eyebrow">
-            {t.eyebrow}
+            <E path="team.eyebrow" multiline={false}>{t.eyebrow}</E>
           </motion.span>
           <motion.h2
             variants={fadeUp}
             className="headline mt-5 text-[clamp(2rem,4.5vw,3.75rem)] text-ink whitespace-pre-line"
           >
-            {t.title}
+            <E path="team.title">{t.title}</E>
           </motion.h2>
           <motion.p
             variants={fadeUp}
             className="mt-5 text-ink-soft text-lg leading-relaxed"
           >
-            {t.sub}
+            <E path="team.sub">{t.sub}</E>
           </motion.p>
         </motion.div>
 
@@ -43,13 +44,14 @@ export function FoundersGrid() {
           variants={stagger(0.08)}
           className="mt-16 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"
         >
-          {t.members.map((m) => (
+          {t.members.map((m, i) => (
             <motion.li
               key={m.name}
               variants={fadeUp}
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3 }}
               className="group text-center"
+              data-team-index={i}
             >
               <div className="relative mx-auto w-28 h-28 lg:w-32 lg:h-32">
                 <div
@@ -62,8 +64,12 @@ export function FoundersGrid() {
                   {m.initials}
                 </div>
               </div>
-              <div className="mt-4 font-medium text-ink text-sm">{m.name}</div>
-              <div className="mt-1 text-xs text-ink-mute">{m.role}</div>
+              <div className="mt-4 font-medium text-ink text-sm">
+                <E path={`team.members[${i}].name`} multiline={false}>{m.name}</E>
+              </div>
+              <div className="mt-1 text-xs text-ink-mute">
+                <E path={`team.members[${i}].role`} multiline={false}>{m.role}</E>
+              </div>
             </motion.li>
           ))}
         </motion.ul>
