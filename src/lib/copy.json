@@ -202,7 +202,7 @@
         "id": "omni",
         "label": "Omnipratique",
         "title": "Votre pratique généraliste, fluide.",
-        "body": "Consultations, soins courants, suivi de routine — un seul dossier qui suit le patient de la première visite à l'année suivante. Fini les quinze onglets.",
+        "body": "Consultations, soins et suivi de routine — un seul dossier qui suit le patient de la première visite à l'année suivante. Fini les quinze onglets.",
         "caption": "Le quotidien du praticien généraliste",
         "stages": [
           {
@@ -227,7 +227,7 @@
         "id": "pedo",
         "label": "Pédodontie",
         "title": "Suivre la croissance.",
-        "body": "De la première dent de lait au sourire adulte, OralData accompagne chaque enfant. Alertes d'éruption, courbes, photos — dans la durée.",
+        "body": "De la première dent de lait au sourire adulte, OralData accompagne chaque enfant. Documents explicatifs adaptés aux enfants..",
         "caption": "De la première visite au sourire adulte",
         "stages": [
           {
