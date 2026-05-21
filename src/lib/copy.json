@@ -104,42 +104,42 @@
       {
         "icon": "FileText",
         "title": "Rédaction automatique",
-        "body": "Vos comptes-rendus rédigés pendant que vous soignez."
+        "body": "La rédaction de vos comptes rendus de soin et de consultation "
       },
       {
         "icon": "Cloud",
         "title": "Stockage illimité",
-        "body": "Radios, photos, DICOM. Tout, pour toujours."
+        "body": "Un stockage illimité de radios, photos, CBCT de vos patients.. Tout, pour toujours."
       },
       {
         "icon": "Mic",
-        "title": "Dictée vocale structurée",
-        "body": "Parlez. OralData structure et classe."
+        "title": "Dictée vocale ",
+        "body": "Un outil de dictée vocale pour structurer vos conversations avec vos patients"
       },
       {
         "icon": "Users",
         "title": "Dossier patient partagé",
-        "body": "Un seul dossier, accessible à vos correspondants."
+        "body": "Une plateforme pour recevoir et centraliser tous les patients qui vous sont adressés. "
       },
       {
         "icon": "Package",
         "title": "Catalogue produit",
-        "body": "Chaque instrument tracé, sourcé, référencé."
+        "body": "Un catalogue produit complet pour tracer vos traitements"
       },
       {
         "icon": "BarChart3",
         "title": "Statistiques cliniques",
-        "body": "Votre activité, lue en un coup d'œil. "
+        "body": "Suivi précis des données de votre activité et outil de recherche de cas cliniques  "
       },
       {
         "icon": "Calendar",
         "title": "Agenda",
-        "body": "OralData lit l'agenda de votre outil de prise de rendez-vous pour centraliser vos consultations et planifier votre journée clinique sans changer de logiciel."
+        "body": "Lecture de votre outil de prise de rendez-vous pour visualiser toute votre agenda sans changer de logiciel."
       },
       {
         "icon": "Workflow",
         "title": "Intégrations avec logiciels métiers",
-        "body": "OralData extrait les données utiles de vos logiciels métiers pour les centraliser dans le dossier patient — sans double saisie, sans jonglage entre outils."
+        "body": "Extraction des données de vos logiciels métiers sans double saisie, sans jonglage entre outils."
       }
     ]
   },
