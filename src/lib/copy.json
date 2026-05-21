@@ -145,7 +145,7 @@
   },
   "specialties": {
     "eyebrow": "Conçu pour vos spécialités",
-    "title": "Un logiciel.\nQuatre spécialites.",
+    "title": "Un logiciel.\nQuatre spécialités.",
     "sub": "OralData est adapté aux gestes et aux protocoles de chaque discipline.",
     "tabs": [
       {
@@ -462,6 +462,6 @@
       }
     ],
     "copyright": "OralData © 2026. Tous droits réservés.",
-    "tagline": "Moins de temps perdu. Plus de patients soignés."
+    "tagline": "Moins de temps perdu.\nPlus de patients soignés."
   }
 }
