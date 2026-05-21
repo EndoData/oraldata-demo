@@ -1,8 +1,9 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Mic, ShieldCheck, ListChecks } from "lucide-react";
+import { Mic, ShieldCheck } from "lucide-react";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce, easeOut } from "@/lib/motion";
 import { E } from "@/components/editor/EditableText";
@@ -344,72 +345,18 @@ function MicMock() {
 }
 
 function ChecklistMock() {
-  const rows = [
-    { label: "Lésion carieuse", highlight: false, badge: "→" },
-    { label: "Lésion non carieuse", highlight: false, badge: "→" },
-    { label: "Restauration", highlight: false, badge: "→" },
-    { label: "Fracture", highlight: true, badge: "→" },
-    { label: "Fêlure", highlight: false, badge: "→" },
-    { label: "Occlusion", highlight: false, badge: "→" },
-  ];
-  const tests = [
-    { name: "Percussion", values: "Oc · V · L" },
-    { name: "Palpation V", values: "Apicale · Cervicale" },
-    { name: "Test au froid", values: "+ Sans rémanence" },
-    { name: "Test au chaud", values: "+" },
-  ];
   return (
-    <div className="relative w-full max-w-lg">
+    <div className="relative w-full max-w-xl">
       <div className="absolute -inset-6 bg-brand-100/40 blur-2xl rounded-3xl -z-10" />
-      <div className="rounded-2xl bg-white border hairline border-[color:var(--color-line)] shadow-[var(--shadow-card)] overflow-hidden">
-        <div className="grid grid-cols-[1fr_1.1fr] divide-x divide-[color:var(--color-line)]">
-          <div>
-            <div className="px-4 py-3 border-b hairline border-b-[color:var(--color-line)] flex items-center gap-2">
-              <ListChecks className="w-4 h-4 text-brand-600" strokeWidth={1.75} />
-              <span className="text-xs font-medium text-ink">Examen dentaire</span>
-            </div>
-            <ul className="divide-y divide-[color:var(--color-line)]">
-              {rows.map((row) => (
-                <li
-                  key={row.label}
-                  className={`flex items-center justify-between px-4 py-2.5 text-[11px] lg:text-xs ${
-                    row.highlight
-                      ? "bg-emerald-50 text-ink"
-                      : "text-ink-soft"
-                  }`}
-                >
-                  <span className="truncate pr-2">{row.label}</span>
-                  <span className="text-ink-mute">{row.badge}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <div className="px-4 py-3 border-b hairline border-b-[color:var(--color-line)]">
-              <span className="text-xs font-medium text-ink">Tests</span>
-            </div>
-            <ul className="divide-y divide-[color:var(--color-line)]">
-              {tests.map((t) => (
-                <li
-                  key={t.name}
-                  className="grid grid-cols-[auto_1fr] gap-3 px-4 py-2.5 text-[11px] lg:text-xs"
-                >
-                  <span className="font-medium text-ink whitespace-nowrap">
-                    {t.name}
-                  </span>
-                  <span className="text-ink-soft truncate">{t.values}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-white border hairline border-[color:var(--color-line)] shadow-[var(--shadow-soft)] flex items-center gap-2">
-        <span className="text-[10px] uppercase tracking-[0.18em] text-brand-700 font-medium">
-          Type
-        </span>
-        <span className="text-xs text-ink">Coronaire simple</span>
-      </div>
+      <Image
+        src="/process/checklist-mock.png"
+        alt="Aperçu de la checklist clinique OralData : examen dentaire et tests"
+        width={1600}
+        height={787}
+        className="w-full h-auto"
+        sizes="(min-width: 1024px) 36rem, 90vw"
+        priority={false}
+      />
     </div>
   );
 }
