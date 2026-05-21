@@ -6,6 +6,7 @@ import { SpecialtiesSection } from "@/components/three/SpecialtiesSection";
 import { HowItWorks } from "@/components/process/HowItWorks";
 import { FoundersGrid } from "@/components/team/FoundersGrid";
 import { Testimonials } from "@/components/testimonials/Testimonials";
+import { FAQ } from "@/components/faq/FAQ";
 import { FinalCTA } from "@/components/cta/FinalCTA";
 import { Footer } from "@/components/Footer";
 
@@ -21,6 +22,7 @@ export default function Home() {
         <HowItWorks />
         <FoundersGrid />
         <Testimonials />
+        <FAQ />
         <FinalCTA />
       </main>
       <Footer />
