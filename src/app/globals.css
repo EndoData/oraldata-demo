@@ -63,14 +63,15 @@ body {
 
 .font-serif {
   font-family: var(--font-serif);
-  letter-spacing: var(--tracking-tighter);
+  letter-spacing: var(--tracking-tight);
+  font-weight: 600;
 }
 
 .headline {
   font-family: var(--font-serif);
-  letter-spacing: var(--tracking-tighter);
-  font-weight: 400;
-  line-height: 1;
+  letter-spacing: var(--tracking-tight);
+  font-weight: 700;
+  line-height: 1.05;
 }
 
 .eyebrow {

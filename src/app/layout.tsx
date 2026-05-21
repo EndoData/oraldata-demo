@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { Montserrat, Fraunces } from "next/font/google";
+import { Montserrat, Plus_Jakarta_Sans } from "next/font/google";
 import { EditorProvider } from "@/lib/editor";
 import "./globals.css";
 
@@ -10,11 +10,11 @@ const sans = Montserrat({
   display: "swap",
 });
 
-const serif = Fraunces({
+const display = Plus_Jakarta_Sans({
   variable: "--font-serif",
   subsets: ["latin"],
   display: "swap",
-  axes: ["opsz", "SOFT"],
+  weight: ["500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {
@@ -46,7 +46,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${sans.variable} ${serif.variable} h-full antialiased`}
+      className={`${sans.variable} ${display.variable} h-full antialiased`}
     >
       <body className="min-h-full bg-canvas text-ink font-sans selection:bg-brand-200 selection:text-brand-900">
         <Suspense fallback={null}>
