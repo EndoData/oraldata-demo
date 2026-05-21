@@ -20,7 +20,7 @@ export function FinalCTA() {
         whileInView="visible"
         viewport={viewportOnce}
         variants={stagger(0.1)}
-        className="relative mx-auto max-w-3xl px-6 text-center"
+        className="relative mx-auto max-w-4xl px-6 text-center"
       >
         <motion.div
           variants={fadeUp}

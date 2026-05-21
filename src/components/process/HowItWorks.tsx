@@ -51,7 +51,7 @@ export function HowItWorks() {
           whileInView="visible"
           viewport={viewportOnce}
           variants={stagger(0.08)}
-          className="max-w-2xl mx-auto text-center"
+          className="max-w-4xl mx-auto text-center"
         >
           <motion.span variants={fadeUp} className="eyebrow">
             <E path="process.eyebrow" multiline={false}>{p.eyebrow}</E>

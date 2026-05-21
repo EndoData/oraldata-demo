@@ -37,7 +37,7 @@ export function FeatureGrid() {
           whileInView="visible"
           viewport={viewportOnce}
           variants={stagger(0.08)}
-          className="max-w-3xl"
+          className="max-w-4xl"
         >
           <motion.span variants={fadeUp} className="eyebrow">
             <E path="features.eyebrow" multiline={false}>{f.eyebrow}</E>
