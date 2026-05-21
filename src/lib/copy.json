@@ -359,7 +359,7 @@
   },
   "testimonials": {
     "eyebrow": "Ce que disent nos utilisateurs",
-    "title": "Des cabinets qui adoptent la solution tous les jours",
+    "title": "Des cabinets qui adoptent la solution tous les jours.",
     "handle": "@oraldata_software",
     "items": [
       {
@@ -426,10 +426,10 @@
   "finalCta": {
     "eyebrow": "Prêt à transformer votre cabinet ?",
     "title": "Retrouvez votre temps.\nDès la semaine prochaine.",
-    "sub": "Démonstration gratuite de 30 minutes. Sans engagement. Installation en 5 minutes.",
+    "sub": "Démonstration gratuite de 30 minutes.\nSans engagement. Installation en 5 minutes.",
     "primary": "Réserver une démo",
     "secondary": "Parler à un conseiller",
-    "small": "Démonstration animée par Pierre et Chantal, assistants dentaires, qui vous aideront à mettre en place le logiciel selon l'organisation de votre cabinet."
+    "small": "Démonstration animée par Pedro et Chantal (assistante dentaire) qui vous aideront à mettre en place le logiciel selon l'organisation de votre cabinet."
   },
   "footer": {
     "columns": [
