@@ -317,12 +317,6 @@ function SplitStepWithToggle({
         </div>
       </motion.div>
 
-      <motion.p
-        variants={fadeUp}
-        className="mt-8 lg:mt-10 text-center font-serif text-lg lg:text-xl text-ink-soft tracking-tight"
-      >
-        Le tout en moins d&apos;une minute.
-      </motion.p>
     </motion.div>
   );
 }
