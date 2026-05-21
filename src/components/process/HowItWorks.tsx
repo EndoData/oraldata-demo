@@ -227,12 +227,8 @@ function SplitStepWithToggle({
         </div>
       </motion.div>
 
-      <motion.div
-        variants={fadeUp}
-        className="grid lg:grid-cols-[1.3fr_1fr] gap-10 lg:gap-14 items-center"
-        data-step-toggle-grid
-      >
-        <div className="relative min-h-[20rem] lg:min-h-[26rem] flex items-center justify-center">
+      <motion.div variants={fadeUp} className="space-y-12 lg:space-y-16">
+        <div className="relative min-h-[20rem] lg:min-h-[24rem] flex items-center justify-center">
           <AnimatePresence mode="wait" initial={false}>
             <motion.div
               key={active?.id ?? "empty"}
@@ -266,17 +262,18 @@ function SplitStepWithToggle({
           role="tabpanel"
           id={`${tablistId}-${active?.id}-panel`}
           aria-labelledby={`${tablistId}-${active?.id}-tab`}
+          className="relative max-w-5xl mx-auto"
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.ol
               key={active?.id ?? "empty-list"}
-              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, x: 16 }}
+              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, y: 12 }}
               animate={
                 reducedMotion
                   ? { opacity: 1 }
                   : {
                       opacity: 1,
-                      x: 0,
+                      y: 0,
                       transition: { duration: 0.45, ease: easeOut, staggerChildren: 0.08 },
                     }
               }
@@ -285,15 +282,20 @@ function SplitStepWithToggle({
                   ? { opacity: 0 }
                   : {
                       opacity: 0,
-                      x: -8,
+                      y: -8,
                       transition: { duration: 0.2, ease: easeOut },
                     }
               }
-              className="relative pl-8 lg:pl-10 space-y-8 before:absolute before:left-[14px] lg:before:left-[18px] before:top-2 before:bottom-2 before:w-px before:bg-[color:var(--color-line)]"
+              className="grid md:grid-cols-3 gap-8 lg:gap-12 relative"
             >
+              {/* Linha conectora horizontal (desktop) */}
+              <span
+                aria-hidden
+                className="hidden md:block absolute top-[18px] left-[14%] right-[14%] h-px bg-gradient-to-r from-transparent via-[color:var(--color-line)] to-transparent"
+              />
               {active?.steps.map((sub, k) => (
-                <li key={sub.number} className="relative">
-                  <span className="absolute -left-8 lg:-left-10 top-1 w-7 h-7 lg:w-9 lg:h-9 rounded-full bg-surface border hairline border-[color:var(--color-line)] flex items-center justify-center font-serif text-xs lg:text-sm text-brand-700">
+                <li key={sub.number} className="relative text-center md:text-left">
+                  <span className="relative inline-flex items-center justify-center w-9 h-9 rounded-full bg-surface border hairline border-[color:var(--color-line)] font-serif text-sm text-brand-700 shadow-[var(--shadow-soft)] mb-4">
                     {sub.number}
                   </span>
                   <h4 className="font-medium text-ink text-base lg:text-lg leading-snug">
@@ -304,7 +306,7 @@ function SplitStepWithToggle({
                       {sub.title}
                     </E>
                   </h4>
-                  <p className="mt-2 text-sm text-ink-soft leading-relaxed max-w-md">
+                  <p className="mt-2 text-sm text-ink-soft leading-relaxed">
                     <E
                       path={`process.steps[${index}].variants[${activeIndex}].steps[${k}].body`}
                     >
@@ -397,19 +399,19 @@ const TEST_ROWS: TestRow[] = [
 
 function ChecklistMock() {
   return (
-    <div className="relative w-full max-w-3xl mx-auto">
-      <div className="absolute -inset-6 bg-brand-100/40 blur-2xl rounded-3xl -z-10" />
-      <div className="relative rounded-2xl bg-white border hairline border-[color:var(--color-line)] shadow-[var(--shadow-card)] p-5 lg:p-7">
-        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.7fr)] gap-5 lg:gap-7">
+    <div className="relative w-full max-w-5xl mx-auto">
+      <div className="absolute -inset-8 bg-brand-100/40 blur-3xl rounded-[2rem] -z-10" />
+      <div className="relative rounded-2xl bg-white border hairline border-[color:var(--color-line)] shadow-[var(--shadow-card)] p-6 lg:p-8">
+        <div className="grid grid-cols-[minmax(0,0.85fr)_minmax(0,1.7fr)] gap-6 lg:gap-10">
           <div className="min-w-0">
-            <h4 className="font-medium text-ink text-base lg:text-lg mb-4 px-1">
+            <h4 className="font-medium text-ink text-lg lg:text-xl mb-4">
               Examen dentaire
             </h4>
             <ul className="space-y-2">
               {EXAMEN_ROWS.map((row) => (
                 <li
                   key={row.label}
-                  className={`group flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-xs lg:text-[13px] leading-tight ${
+                  className={`group flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[13px] lg:text-sm leading-tight ${
                     row.highlight
                       ? "bg-emerald-100/90 border border-emerald-200 text-ink"
                       : "bg-emerald-50/70 border border-emerald-100/80 text-ink-soft"
@@ -438,7 +440,7 @@ function ChecklistMock() {
           </div>
 
           <div className="relative min-w-0">
-            <h4 className="font-medium text-ink text-base lg:text-lg mb-4 px-1">
+            <h4 className="font-medium text-ink text-lg lg:text-xl mb-4">
               Tests
             </h4>
             <ul className="space-y-2">
@@ -448,11 +450,11 @@ function ChecklistMock() {
                 return (
                   <li
                     key={t.name}
-                    className="grid grid-cols-[8.5rem_minmax(0,1fr)] gap-2.5 items-center bg-sky-50/70 border border-sky-100/80 rounded-lg px-3 py-2 text-xs lg:text-[13px] leading-tight"
+                    className="grid grid-cols-[11rem_minmax(0,1fr)] gap-3 items-center bg-sky-50/70 border border-sky-100/80 rounded-lg px-3 py-2.5 text-[13px] lg:text-sm leading-tight"
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <TestIcon
-                        className="w-3.5 h-3.5 text-brand-700 shrink-0"
+                        className="w-4 h-4 text-brand-700 shrink-0"
                         strokeWidth={2}
                       />
                       <span className="font-medium text-ink truncate">
@@ -460,7 +462,7 @@ function ChecklistMock() {
                       </span>
                     </div>
                     {isElectrique ? (
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-3">
                         <div className="relative flex-1 h-1.5 rounded-full bg-white border border-sky-200">
                           <div className="absolute top-1/2 -translate-y-1/2 left-[60%] w-3 h-3 rounded-full bg-brand-500 shadow-[0_0_0_3px_rgba(46,122,153,0.18)]" />
                         </div>
@@ -471,7 +473,7 @@ function ChecklistMock() {
                         {t.cells.map((c, j) => (
                           <span
                             key={`${t.name}-${j}`}
-                            className="bg-white text-ink-soft border border-sky-100 rounded-md px-2 py-1 text-center truncate"
+                            className="bg-white text-ink-soft border border-sky-100 rounded-md px-2.5 py-1 text-center whitespace-nowrap"
                           >
                             {c}
                           </span>
@@ -484,21 +486,21 @@ function ChecklistMock() {
             </ul>
 
             {/* Popover "Type" — flutua sobre a linha Pression, com seta apontando pra esquerda */}
-            <div className="absolute top-[7.5rem] -left-6 z-10 hidden md:block">
+            <div className="absolute top-[7.5rem] left-2 lg:-left-8 z-10 hidden md:block">
               <div className="relative bg-white rounded-xl border border-sky-200 shadow-[0_18px_40px_-12px_rgba(15,26,34,0.25)] px-4 py-3">
                 <div className="grid grid-cols-[auto_1fr] gap-x-4 items-center">
                   <span className="font-medium text-ink text-sm">Type</span>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <span className="bg-sky-50 text-ink rounded-md px-2.5 py-1.5 whitespace-nowrap border border-sky-100">
+                  <div className="grid grid-cols-2 gap-2 text-xs lg:text-[13px]">
+                    <span className="bg-sky-50 text-ink rounded-md px-3 py-1.5 whitespace-nowrap border border-sky-100">
                       Coronaire simple
                     </span>
-                    <span className="bg-sky-50 text-ink rounded-md px-2.5 py-1.5 whitespace-nowrap border border-sky-100">
+                    <span className="bg-sky-50 text-ink rounded-md px-3 py-1.5 whitespace-nowrap border border-sky-100">
                       Coronaire compliquée
                     </span>
-                    <span className="bg-sky-50 text-ink rounded-md px-2.5 py-1.5 whitespace-nowrap border border-sky-100">
+                    <span className="bg-sky-50 text-ink rounded-md px-3 py-1.5 whitespace-nowrap border border-sky-100">
                       Corono-radiculaire
                     </span>
-                    <span className="bg-sky-50 text-ink rounded-md px-2.5 py-1.5 whitespace-nowrap border border-sky-100">
+                    <span className="bg-sky-50 text-ink rounded-md px-3 py-1.5 whitespace-nowrap border border-sky-100">
                       Radiculaire
                     </span>
                   </div>
