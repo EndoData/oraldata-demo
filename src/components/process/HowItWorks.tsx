@@ -1,9 +1,10 @@
 "use client";
 
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   Mic,
+  Square,
   ShieldCheck,
   Check,
   ChevronRight,
@@ -324,40 +325,140 @@ function SplitStepWithToggle({
 function MicMock() {
   const reducedMotion = useReducedMotion();
   const RING_COUNT = 3;
+  const IDLE_MS = 2400;
+  const RECORDING_MS = 4200;
+  const [phase, setPhase] = useState<"idle" | "recording">("idle");
+
+  useEffect(() => {
+    if (reducedMotion) return;
+    const ms = phase === "idle" ? IDLE_MS : RECORDING_MS;
+    const t = window.setTimeout(() => {
+      setPhase((p) => (p === "idle" ? "recording" : "idle"));
+    }, ms);
+    return () => window.clearTimeout(t);
+  }, [phase, reducedMotion]);
+
+  const isRecording = phase === "recording";
+
   return (
     <div className="relative w-full max-w-sm aspect-square flex items-center justify-center">
-      <div className="absolute inset-10 rounded-full bg-gradient-to-br from-rose-200/40 via-red-300/40 to-red-500/40 blur-3xl" />
+      <motion.div
+        animate={{
+          background: isRecording
+            ? "radial-gradient(circle at center, rgba(248,113,113,0.4), rgba(239,68,68,0.4), rgba(220,38,38,0.4))"
+            : "radial-gradient(circle at center, rgba(188,216,228,0.3), rgba(88,154,182,0.3), rgba(46,122,153,0.3))",
+        }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="absolute inset-10 rounded-full blur-3xl"
+      />
 
-      {/* Ondas pulsantes saindo do círculo (efeito 'alguém falando') */}
-      {!reducedMotion
-        ? Array.from({ length: RING_COUNT }).map((_, i) => (
-            <motion.span
-              key={`ring-${i}`}
-              aria-hidden
-              initial={{ scale: 1, opacity: 0.55 }}
-              animate={{ scale: 1.9, opacity: 0 }}
-              transition={{
-                duration: 2.4,
-                repeat: Infinity,
-                ease: "easeOut",
-                delay: (i * 2.4) / RING_COUNT,
-              }}
-              className="absolute w-40 h-40 lg:w-48 lg:h-48 rounded-full bg-red-500/25 border border-red-400/50"
-            />
-          ))
-        : null}
+      {/* Ondas pulsantes — só no estado 'recording' */}
+      <AnimatePresence>
+        {isRecording && !reducedMotion
+          ? Array.from({ length: RING_COUNT }).map((_, i) => (
+              <motion.span
+                key={`ring-${i}-${phase}`}
+                aria-hidden
+                initial={{ scale: 1, opacity: 0.55 }}
+                animate={{ scale: 1.9, opacity: 0 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  duration: 2.4,
+                  repeat: Infinity,
+                  ease: "easeOut",
+                  delay: (i * 2.4) / RING_COUNT,
+                }}
+                className="absolute w-40 h-40 lg:w-48 lg:h-48 rounded-full bg-red-500/25 border border-red-400/50"
+              />
+            ))
+          : null}
+      </AnimatePresence>
 
       <motion.div
-        animate={reducedMotion ? undefined : { scale: [1, 1.04, 1] }}
-        transition={
-          reducedMotion
-            ? undefined
-            : { duration: 1.6, repeat: Infinity, ease: "easeInOut" }
-        }
-        className="relative w-40 h-40 lg:w-48 lg:h-48 rounded-full bg-gradient-to-br from-red-400 via-red-500 to-red-700 flex items-center justify-center shadow-[0_24px_60px_-18px_rgba(220,38,38,0.55)]"
+        animate={{
+          background: isRecording
+            ? "linear-gradient(135deg, rgb(248,113,113), rgb(239,68,68), rgb(185,28,28))"
+            : "linear-gradient(135deg, rgb(88,154,182), rgb(46,122,153), rgb(23,74,98))",
+          boxShadow: isRecording
+            ? "0 24px 60px -18px rgba(220,38,38,0.55)"
+            : "0 24px 60px -18px rgba(23,74,98,0.45)",
+          scale: reducedMotion ? 1 : isRecording ? [1, 1.04, 1] : [1, 1.02, 1],
+        }}
+        transition={{
+          background: { duration: 0.5, ease: "easeOut" },
+          boxShadow: { duration: 0.5, ease: "easeOut" },
+          scale: reducedMotion
+            ? { duration: 0 }
+            : {
+                duration: isRecording ? 1.6 : 2.6,
+                repeat: Infinity,
+                ease: "easeInOut",
+              },
+        }}
+        className="relative w-40 h-40 lg:w-48 lg:h-48 rounded-full flex items-center justify-center"
       >
         <div className="absolute inset-3 rounded-full bg-gradient-to-br from-white/15 to-transparent" />
-        <Mic className="relative w-14 h-14 lg:w-16 lg:h-16 text-white" strokeWidth={1.5} />
+        <AnimatePresence mode="wait" initial={false}>
+          {isRecording ? (
+            <motion.span
+              key="square"
+              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
+              animate={
+                reducedMotion
+                  ? { opacity: 1 }
+                  : {
+                      opacity: 1,
+                      scale: 1,
+                      transition: { duration: 0.3, ease: "easeOut" },
+                    }
+              }
+              exit={
+                reducedMotion
+                  ? { opacity: 0 }
+                  : {
+                      opacity: 0,
+                      scale: 0.6,
+                      transition: { duration: 0.2, ease: "easeIn" },
+                    }
+              }
+              className="relative"
+            >
+              <Square
+                className="w-10 h-10 lg:w-12 lg:h-12 text-white fill-white"
+                strokeWidth={1.5}
+              />
+            </motion.span>
+          ) : (
+            <motion.span
+              key="mic"
+              initial={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.6 }}
+              animate={
+                reducedMotion
+                  ? { opacity: 1 }
+                  : {
+                      opacity: 1,
+                      scale: 1,
+                      transition: { duration: 0.3, ease: "easeOut" },
+                    }
+              }
+              exit={
+                reducedMotion
+                  ? { opacity: 0 }
+                  : {
+                      opacity: 0,
+                      scale: 0.6,
+                      transition: { duration: 0.2, ease: "easeIn" },
+                    }
+              }
+              className="relative"
+            >
+              <Mic
+                className="w-14 h-14 lg:w-16 lg:h-16 text-white"
+                strokeWidth={1.5}
+              />
+            </motion.span>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       <div className="absolute top-6 right-6 lg:top-8 lg:right-10 w-10 h-10 rounded-full bg-white border hairline border-[color:var(--color-line)] shadow-[var(--shadow-soft)] flex items-center justify-center z-10">
