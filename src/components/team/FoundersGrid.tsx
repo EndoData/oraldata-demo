@@ -11,7 +11,7 @@ type Member = (typeof copy.team.members)[number];
 export function FoundersGrid() {
   const t = copy.team;
   return (
-    <section id="team" className="py-24 lg:py-32">
+    <section id="team" className="py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <motion.div
           initial="hidden"

@@ -11,7 +11,7 @@ export function FinalCTA() {
   return (
     <section
       id="demo"
-      className="relative py-28 lg:py-40 overflow-hidden bg-gradient-to-b from-canvas via-surface-2 to-canvas"
+      className="relative py-20 lg:py-28 overflow-hidden bg-gradient-to-b from-canvas via-surface-2 to-canvas"
     >
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-3xl aspect-square rounded-full bg-[radial-gradient(circle_at_center,rgba(201,162,39,0.06),transparent_60%)] pointer-events-none" />
 

@@ -30,7 +30,7 @@ const iconMap: Record<string, LucideIcon> = {
 export function FeatureGrid() {
   const f = copy.features;
   return (
-    <section id="features" className="py-24 lg:py-32">
+    <section id="features" className="py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <motion.div
           initial="hidden"

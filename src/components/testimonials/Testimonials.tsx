@@ -42,7 +42,7 @@ export function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="py-24 lg:py-32 bg-surface-2 border-y hairline border-y-[color:var(--color-line)]"
+      className="py-16 lg:py-20 bg-surface-2 border-y hairline border-y-[color:var(--color-line)]"
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <motion.div
