@@ -476,8 +476,8 @@ function ChecklistMock() {
               })}
             </ul>
 
-            {/* Popover "Type" — flutua sobre a linha Pression, com seta apontando pra esquerda */}
-            <div className="absolute top-[6.5rem] left-0 lg:-left-6 z-10 hidden md:block">
+            {/* Popover "Type" — alinhado verticalmente com a linha Fracture do Examen (5ª linha) */}
+            <div className="absolute top-[10rem] lg:top-[10.5rem] left-0 lg:-left-6 z-10 hidden md:block">
               <div className="relative bg-white rounded-lg border border-sky-200 shadow-[0_18px_40px_-12px_rgba(15,26,34,0.25)] px-3 py-2">
                 <div className="grid grid-cols-[auto_1fr] gap-x-3 items-center">
                   <span className="font-medium text-ink text-xs">Type</span>
