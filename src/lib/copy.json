@@ -359,7 +359,7 @@
   },
   "testimonials": {
     "eyebrow": "Ce que disent nos utilisateurs",
-    "title": "Des cabinets qui ont\nretrouvé leur rythme.",
+    "title": "Des cabinets qui adoptent la solution tous les jours",
     "handle": "@oraldata_software",
     "items": [
       {
@@ -411,7 +411,7 @@
       },
       {
         "question": "Puis-je personnaliser les mails d'envoi et les comptes rendus ?",
-        "answer": "Oui. Vous pouvez modifier l'emplacement des widgets sur vos comptes rendus destinés aux spécialistes, et demander à l'IA d'adapter le texte du CR : choix de la langue, et adaptation automatique du ton selon le destinataire (confrère, patient, proche)."
+        "answer": "Oui. Vous pouvez modifier vos e-mails destinés aux patients et vos confréres, et demander à l'IA d'adapter le texte du CR : choix de la langue, et adaptation automatique du ton selon le destinataire (confrère, patient, proche)."
       },
       {
         "question": "Puis-je explorer mes données avec OralData ?",
@@ -419,7 +419,7 @@
       },
       {
         "question": "Mon secrétariat peut-il utiliser OralData ?",
-        "answer": "Oui, sans abonnement supplémentaire. Chaque membre de votre secrétariat dispose de son propre compte avec son mot de passe. Chantal, notre chargée de suivi client et assistante dentaire, les accompagne personnellement dans la prise en main de l'outil."
+        "answer": "Oui, sans abonnement supplémentaire. Chaque membre de votre secrétariat dispose de son propre compte avec son mot de passe.\nChantal, notre chargée de suivi client et assistante dentaire, les accompagne personnellement dans la prise en main de l'outil."
       }
     ]
   },
