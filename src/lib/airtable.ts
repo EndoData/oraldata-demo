@@ -60,6 +60,8 @@ export async function createLead(
     Spécialité: [specialiteCRM],
     Statut: "Prospect",
     NIVEAU: "LEAD",
+    FROM: "LANDING PAGE",
+    PROVENANCE: ["Landing Page web"],
     "Communication marketing": payload.rgpdConsent ? "Oui" : "Non",
     "Informations diverses": infosDiverses,
   };
@@ -75,7 +77,7 @@ export async function createLead(
         Authorization: `Bearer ${AIRTABLE_TOKEN}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ records: [{ fields }] }),
+      body: JSON.stringify({ records: [{ fields }], typecast: true }),
     },
   );
 
