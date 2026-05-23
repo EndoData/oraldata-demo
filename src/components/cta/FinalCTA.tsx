@@ -5,9 +5,11 @@ import { ArrowRight, Calendar } from "lucide-react";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import { E } from "@/components/editor/EditableText";
+import { useBooking } from "@/components/booking/BookingProvider";
 
 export function FinalCTA() {
   const c = copy.finalCta;
+  const { openBooking } = useBooking();
   return (
     <section
       id="demo"
@@ -50,13 +52,14 @@ export function FinalCTA() {
           variants={fadeUp}
           className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
         >
-          <a
-            href="#top"
-            className="btn-accent inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-semibold"
+          <button
+            type="button"
+            onClick={() => openBooking()}
+            className="btn-accent inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-semibold cursor-pointer"
           >
             <E path="finalCta.primary" multiline={false}>{c.primary}</E>
             <ArrowRight className="w-4 h-4" />
-          </a>
+          </button>
           <a
             href="#features"
             className="inline-flex items-center gap-2 px-6 py-4 rounded-full text-sm font-medium text-ink hover:text-brand-700 transition-colors"

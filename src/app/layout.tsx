@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { Montserrat, Plus_Jakarta_Sans } from "next/font/google";
 import { EditorProvider } from "@/lib/editor";
+import { BookingProvider } from "@/components/booking/BookingProvider";
+import { BookingModal } from "@/components/booking/BookingModal";
 import "./globals.css";
 
 const sans = Montserrat({
@@ -50,7 +52,12 @@ export default function RootLayout({
     >
       <body className="min-h-full bg-canvas text-ink font-sans selection:bg-brand-200 selection:text-brand-900">
         <Suspense fallback={null}>
-          <EditorProvider>{children}</EditorProvider>
+          <EditorProvider>
+            <BookingProvider>
+              {children}
+              <BookingModal />
+            </BookingProvider>
+          </EditorProvider>
         </Suspense>
       </body>
     </html>

@@ -137,6 +137,82 @@ body {
   animation: mic-pulse 1.6s ease-in-out infinite;
 }
 
+.form-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  color: var(--color-ink);
+  background: var(--color-surface);
+  border: 1px solid var(--color-line-strong);
+  border-radius: var(--radius-md);
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+.form-input::placeholder {
+  color: var(--color-ink-mute);
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-brand-500);
+  box-shadow: 0 0 0 3px rgb(46 122 153 / 0.12);
+}
+.form-input:disabled {
+  background: var(--color-surface-2);
+  color: var(--color-ink-mute);
+}
+
+/* DayPicker overrides */
+.rdp-oraldata {
+  --rdp-accent-color: var(--color-brand-700);
+  --rdp-background-color: var(--color-brand-50);
+  --rdp-cell-size: 38px;
+  font-size: 0.875rem;
+}
+.rdp-oraldata .rdp-day {
+  border-radius: var(--radius-md);
+  color: var(--color-ink);
+  font-weight: 500;
+}
+.rdp-oraldata .rdp-day:not([disabled]):hover {
+  background: var(--color-brand-50);
+  color: var(--color-brand-700);
+}
+.rdp-oraldata .rdp-day_disabled {
+  color: var(--color-ink-mute);
+  opacity: 0.4;
+}
+.rdp-oraldata .rdp-day-selected,
+.rdp-oraldata .rdp-day_selected {
+  background: var(--color-brand-700) !important;
+  color: white !important;
+}
+.rdp-oraldata .rdp-day-today,
+.rdp-oraldata .rdp-day_today {
+  font-weight: 700;
+  color: var(--color-brand-700);
+}
+.rdp-oraldata .rdp-caption_label,
+.rdp-oraldata .rdp-month_caption {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.rdp-oraldata .rdp-nav button {
+  color: var(--color-ink-soft);
+  border-radius: var(--radius-md);
+}
+.rdp-oraldata .rdp-nav button:hover {
+  background: var(--color-brand-50);
+  color: var(--color-brand-700);
+}
+.rdp-oraldata .rdp-head_cell,
+.rdp-oraldata .rdp-weekday {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-ink-mute);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

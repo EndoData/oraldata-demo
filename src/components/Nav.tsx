@@ -4,8 +4,10 @@ import Image from "next/image";
 import { copy } from "@/lib/copy";
 import { motion } from "framer-motion";
 import { E } from "@/components/editor/EditableText";
+import { useBooking } from "@/components/booking/BookingProvider";
 
 export function Nav() {
+  const { openBooking } = useBooking();
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
@@ -37,12 +39,13 @@ export function Nav() {
           ))}
         </nav>
 
-        <a
-          href="#top"
-          className="btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
+        <button
+          type="button"
+          onClick={() => openBooking()}
+          className="btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium cursor-pointer"
         >
           <E path="nav.primary" multiline={false}>{copy.nav.primary}</E>
-        </a>
+        </button>
       </div>
     </motion.header>
   );

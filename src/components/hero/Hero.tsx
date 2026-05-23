@@ -6,6 +6,7 @@ import { copy } from "@/lib/copy";
 import { CalendarMock } from "./CalendarMock";
 import { fadeUp, easeOut } from "@/lib/motion";
 import { E } from "@/components/editor/EditableText";
+import { useBooking } from "@/components/booking/BookingProvider";
 
 const nfFR = new Intl.NumberFormat("fr-FR");
 function formatCompact(value: number): string {
@@ -22,6 +23,7 @@ function formatCompact(value: number): string {
 
 export function Hero() {
   const h = copy.hero;
+  const { openBooking } = useBooking();
   const cabinets = copy.stats[0];
   const docs = copy.stats[1];
   const socialProof = cabinets && docs
@@ -90,13 +92,14 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.25, ease: easeOut }}
             className="mt-9 flex flex-wrap items-center gap-4"
           >
-            <a
-              href="#top"
-              className="btn-primary inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-medium"
+            <button
+              type="button"
+              onClick={() => openBooking()}
+              className="btn-primary inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-medium cursor-pointer"
             >
               <E path="hero.primaryCta" multiline={false}>{h.primaryCta}</E>
               <ArrowRight className="w-4 h-4" />
-            </a>
+            </button>
             <a
               href="#features"
               className="inline-flex items-center gap-2 px-5 py-3.5 rounded-full text-sm font-medium text-ink hover:text-brand-700 transition-colors"
