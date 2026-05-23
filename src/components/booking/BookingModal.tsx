@@ -15,6 +15,7 @@ import {
   type BookingInput,
 } from "@/lib/booking-schema";
 import { useBooking } from "./BookingProvider";
+import { track } from "@/lib/analytics";
 
 type Slot = { startISO: string; endISO: string; label: string };
 type Step = "date" | "slot" | "form" | "success";
@@ -126,7 +127,11 @@ export function BookingModal() {
                       selected={date}
                       onSelect={(d) => {
                         setDate(d);
-                        if (d) setStep("slot");
+                        if (d) {
+                          const ymd = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+                          track("booking_date_selected", { date: ymd });
+                          setStep("slot");
+                        }
                       }}
                       locale={fr}
                       disabled={[
@@ -185,6 +190,10 @@ export function BookingModal() {
                           type="button"
                           onClick={() => {
                             setSelectedSlot(s);
+                            track("booking_slot_selected", {
+                              slot: s.label,
+                              startISO: s.startISO,
+                            });
                             setStep("form");
                           }}
                           className="px-3 py-3 rounded-lg border border-[color:var(--color-line)] text-sm text-ink hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 transition-colors font-medium"
@@ -303,8 +312,19 @@ function BookingFormStep({
       if (!response.ok) {
         throw new Error(json.error || "Erreur lors de la réservation");
       }
+      track("booking_completed", {
+        specialite: data.specialite,
+        ville: data.ville || null,
+        cabinet: data.cabinet || null,
+        slot: slot.label,
+        slotStartISO: data.slotStartISO,
+        rgpd_consent: data.rgpdConsent,
+      });
       onSuccess(json.meetLink);
     } catch (err) {
+      track("booking_failed", {
+        error: err instanceof Error ? err.message : "unknown",
+      });
       setSubmitError(
         err instanceof Error ? err.message : "Erreur lors de la réservation",
       );

@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useCallback, useContext, useState } from "react";
+import { track } from "@/lib/analytics";
 
 export type PrefilledSlot = {
   startISO: string;
@@ -33,6 +34,13 @@ export function BookingProvider({ children }: { children: React.ReactNode }) {
       setPrefilledSlot(prefill?.slot ?? null);
       setPrefilledDateYMD(prefill?.dateYMD ?? null);
       setIsOpen(true);
+      track("booking_modal_open", {
+        source: prefill?.slot
+          ? "hero_calendar_confirm"
+          : prefill?.dateYMD
+            ? "hero_calendar_more_slots"
+            : "cta_button",
+      });
     },
     [],
   );

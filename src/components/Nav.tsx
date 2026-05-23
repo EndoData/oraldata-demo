@@ -5,6 +5,7 @@ import { copy } from "@/lib/copy";
 import { motion } from "framer-motion";
 import { E } from "@/components/editor/EditableText";
 import { useBooking } from "@/components/booking/BookingProvider";
+import { track } from "@/lib/analytics";
 
 export function Nav() {
   const { openBooking } = useBooking();
@@ -41,7 +42,10 @@ export function Nav() {
 
         <button
           type="button"
-          onClick={() => openBooking()}
+          onClick={() => {
+            track("cta_click", { location: "nav" });
+            openBooking();
+          }}
           className="btn-primary inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium cursor-pointer"
         >
           <E path="nav.primary" multiline={false}>{copy.nav.primary}</E>

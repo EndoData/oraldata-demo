@@ -7,6 +7,7 @@ import { CalendarMock } from "./CalendarMock";
 import { fadeUp, easeOut } from "@/lib/motion";
 import { E } from "@/components/editor/EditableText";
 import { useBooking } from "@/components/booking/BookingProvider";
+import { track } from "@/lib/analytics";
 
 const nfFR = new Intl.NumberFormat("fr-FR");
 function formatCompact(value: number): string {
@@ -94,7 +95,10 @@ export function Hero() {
           >
             <button
               type="button"
-              onClick={() => openBooking()}
+              onClick={() => {
+                track("cta_click", { location: "hero" });
+                openBooking();
+              }}
               className="btn-primary inline-flex items-center gap-2 px-6 py-3.5 rounded-full text-sm font-medium cursor-pointer"
             >
               <E path="hero.primaryCta" multiline={false}>{h.primaryCta}</E>

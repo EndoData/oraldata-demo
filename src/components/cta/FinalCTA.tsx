@@ -6,6 +6,7 @@ import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
 import { E } from "@/components/editor/EditableText";
 import { useBooking } from "@/components/booking/BookingProvider";
+import { track } from "@/lib/analytics";
 
 export function FinalCTA() {
   const c = copy.finalCta;
@@ -54,7 +55,10 @@ export function FinalCTA() {
         >
           <button
             type="button"
-            onClick={() => openBooking()}
+            onClick={() => {
+              track("cta_click", { location: "final_cta" });
+              openBooking();
+            }}
             className="btn-accent inline-flex items-center gap-2 px-8 py-4 rounded-full text-sm font-semibold cursor-pointer"
           >
             <E path="finalCta.primary" multiline={false}>{c.primary}</E>
