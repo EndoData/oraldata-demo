@@ -1,12 +1,31 @@
 import { NextResponse } from "next/server";
 import { bookingSchema } from "@/lib/booking-schema";
-import { createEvent, deleteEvent } from "@/lib/google-calendar";
-import { createLead } from "@/lib/airtable";
+import {
+  createEvent,
+  deleteEventWithRetry,
+  isSlotStillAvailable,
+} from "@/lib/google-calendar";
+import { createLead, hasRecentLeadByEmail } from "@/lib/airtable";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(request: Request) {
+  const ip = getClientIp(request);
+  const limit = rateLimit(`rdv:${ip}`, { limit: 10, windowMs: 60_000 });
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Trop de requêtes, réessayez dans 1 minute." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)),
+        },
+      },
+    );
+  }
+
   const body = await request.json().catch(() => null);
   if (!body) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
@@ -21,11 +40,46 @@ export async function POST(request: Request) {
   }
   const input = parsed.data;
 
+  if (input.website) {
+    return NextResponse.json({ success: true }, { status: 200 });
+  }
+
   const startDate = new Date(input.slotStartISO);
   if (startDate.getTime() < Date.now() + 23 * 60 * 60 * 1000) {
     return NextResponse.json(
-      { error: "Slot must be at least 24h in the future" },
+      { error: "Le créneau doit être au moins 24h dans le futur" },
       { status: 400 },
+    );
+  }
+
+  try {
+    const recentLead = await hasRecentLeadByEmail(input.email, 24);
+    if (recentLead) {
+      return NextResponse.json(
+        { error: "Vous avez déjà réservé une démo dans les dernières 24h." },
+        { status: 409 },
+      );
+    }
+  } catch (error) {
+    console.error("[rendez-vous] dedupe check failed (continuing):", error);
+  }
+
+  try {
+    const stillAvailable = await isSlotStillAvailable(
+      input.slotStartISO,
+      input.slotEndISO,
+    );
+    if (!stillAvailable) {
+      return NextResponse.json(
+        { error: "Ce créneau vient d'être pris, veuillez en choisir un autre." },
+        { status: 409 },
+      );
+    }
+  } catch (error) {
+    console.error("[rendez-vous] slot recheck failed:", error);
+    return NextResponse.json(
+      { error: "Impossible de vérifier la disponibilité, réessayez." },
+      { status: 502 },
     );
   }
 
@@ -75,12 +129,22 @@ export async function POST(request: Request) {
       meetLink: eventResult.meetLink,
     });
   } catch (error) {
-    console.error("[rendez-vous] airtable error, rolling back event:", error);
-    if (eventResult.eventId) {
-      await deleteEvent(eventResult.eventId).catch((e) =>
-        console.error("[rendez-vous] rollback failed:", e),
-      );
-    }
+    const rollbackOk = await deleteEventWithRetry(eventResult.eventId);
+    console.error(
+      JSON.stringify({
+        level: "error",
+        source: "rendez-vous",
+        airtable_error: error instanceof Error ? error.message : String(error),
+        rollback_ok: rollbackOk,
+        orphan_event_id: rollbackOk ? null : eventResult.eventId,
+        lead_payload: {
+          email: input.email,
+          nom: input.nom,
+          prenom: input.prenom,
+          slot: input.slotStartISO,
+        },
+      }),
+    );
     return NextResponse.json(
       { error: "Could not save lead, please retry" },
       { status: 502 },

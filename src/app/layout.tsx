@@ -5,6 +5,7 @@ import { Montserrat, Plus_Jakarta_Sans } from "next/font/google";
 import { EditorProvider } from "@/lib/editor";
 import { BookingProvider } from "@/components/booking/BookingProvider";
 import { BookingModal } from "@/components/booking/BookingModal";
+import { ConsentBanner } from "@/components/consent/ConsentBanner";
 import { GTM_ID } from "@/lib/analytics";
 import "./globals.css";
 
@@ -53,6 +54,20 @@ export default function RootLayout({
       className={`${sans.variable} ${display.variable} h-full antialiased`}
     >
       <head>
+        <Script id="dataLayer-init" strategy="beforeInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+// Consent Mode v2 — denied by default until user opts in
+gtag('consent', 'default', {
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+  analytics_storage: 'denied',
+  functionality_storage: 'granted',
+  security_storage: 'granted',
+  wait_for_update: 500
+});`}
+        </Script>
         <Script id="gtm-init" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -75,6 +90,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <BookingProvider>
               {children}
               <BookingModal />
+              <ConsentBanner />
             </BookingProvider>
           </EditorProvider>
         </Suspense>

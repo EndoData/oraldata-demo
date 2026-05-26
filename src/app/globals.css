@@ -164,7 +164,7 @@ body {
 .rdp-oraldata {
   --rdp-accent-color: var(--color-brand-700);
   --rdp-background-color: var(--color-brand-50);
-  --rdp-cell-size: 38px;
+  --rdp-cell-size: 44px;
   font-size: 0.875rem;
 }
 .rdp-oraldata .rdp-day {

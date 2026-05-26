@@ -1,10 +1,8 @@
 export const GTM_ID = "GTM-5TN647VF";
 
-type DataLayerEvent = Record<string, unknown> & { event: string };
-
 declare global {
   interface Window {
-    dataLayer?: DataLayerEvent[];
+    dataLayer?: Array<Record<string, unknown> | unknown[]>;
   }
 }
 

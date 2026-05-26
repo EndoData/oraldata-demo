@@ -1,4 +1,9 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import {
+  EDITOR_SESSION_COOKIE,
+  verifyEditorSession,
+} from "@/lib/editor-session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -6,7 +11,6 @@ export const dynamic = "force-dynamic";
 const FILE_PATH = "src/lib/copy.json";
 
 type SavePayload = {
-  token?: string;
   deltas?: Record<string, string>;
 };
 
@@ -48,16 +52,25 @@ function setByPath(
 }
 
 export async function POST(req: Request) {
-  const token = getEnv("EDIT_TOKEN");
+  const editToken = getEnv("EDIT_TOKEN");
   const ghToken = getEnv("GITHUB_TOKEN");
   const owner = getEnv("GITHUB_OWNER");
   const repo = getEnv("GITHUB_REPO");
   const branch = getEnv("GITHUB_BRANCH") ?? "main";
 
-  if (!token || !ghToken || !owner || !repo) {
+  if (!editToken || !ghToken || !owner || !repo) {
     return NextResponse.json(
       { error: "Server is missing required env (EDIT_TOKEN, GITHUB_TOKEN, GITHUB_OWNER, GITHUB_REPO)" },
       { status: 500 },
+    );
+  }
+
+  const c = await cookies();
+  const session = c.get(EDITOR_SESSION_COOKIE)?.value;
+  if (!verifyEditorSession(session)) {
+    return NextResponse.json(
+      { error: "Unauthorized — editor session missing or expired" },
+      { status: 401 },
     );
   }
 
@@ -66,10 +79,6 @@ export async function POST(req: Request) {
     payload = (await req.json()) as SavePayload;
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
-
-  if (payload.token !== token) {
-    return NextResponse.json({ error: "Invalid token" }, { status: 403 });
   }
 
   const deltas = payload.deltas ?? {};

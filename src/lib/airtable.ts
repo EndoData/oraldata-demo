@@ -1,8 +1,12 @@
+import { SPECIALTIES } from "./booking-schema";
+
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN!;
 const BASE_ID = process.env.AIRTABLE_BASE_ID!;
 const TABLE_ID = process.env.AIRTABLE_TABLE_ID!;
 
-const LP_TO_CRM_SPECIALTY: Record<string, string> = {
+type Specialty = (typeof SPECIALTIES)[number];
+
+const LP_TO_CRM_SPECIALTY: Record<Specialty, string> = {
   Endodontie: "Endodontiste",
   Implantologie: "Implantologue",
   Omnipratique: "Omnipraticien",
@@ -16,7 +20,7 @@ export type LeadPayload = {
   telephone: string;
   ville?: string;
   cabinet?: string;
-  specialiteLP: keyof typeof LP_TO_CRM_SPECIALTY;
+  specialiteLP: Specialty;
   message?: string;
   rgpdConsent: boolean;
   demoStartISO: string;
@@ -90,6 +94,23 @@ export async function createLead(
     records: { id: string }[];
   };
   return { recordId: data.records[0].id };
+}
+
+export async function hasRecentLeadByEmail(
+  email: string,
+  withinHours: number = 24,
+): Promise<boolean> {
+  const sinceISO = new Date(Date.now() - withinHours * 3600 * 1000).toISOString();
+  const formula = encodeURIComponent(
+    `AND(LOWER({Adresse mail})="${email.toLowerCase()}", IS_AFTER({Date de création}, "${sinceISO}"))`,
+  );
+  const response = await fetch(
+    `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}?filterByFormula=${formula}&maxRecords=1`,
+    { headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` } },
+  );
+  if (!response.ok) return false;
+  const data = (await response.json()) as { records: { id: string }[] };
+  return data.records.length > 0;
 }
 
 export async function deleteLead(recordId: string): Promise<void> {

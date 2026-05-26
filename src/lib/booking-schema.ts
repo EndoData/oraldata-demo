@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPhoneNumber } from "libphonenumber-js";
 
 export const SPECIALTIES = [
   "Endodontie",
@@ -15,7 +16,9 @@ export const bookingSchema = z.object({
     .string()
     .trim()
     .min(8, "Téléphone requis")
-    .regex(/^[+0-9\s().-]+$/, "Format de téléphone invalide"),
+    .refine((v) => isValidPhoneNumber(v, "FR"), {
+      message: "Numéro de téléphone invalide",
+    }),
   cabinet: z.string().trim().max(120).optional().or(z.literal("")),
   ville: z.string().trim().max(80).optional().or(z.literal("")),
   specialite: z.enum(SPECIALTIES),
@@ -25,6 +28,8 @@ export const bookingSchema = z.object({
   }),
   slotStartISO: z.string().datetime(),
   slotEndISO: z.string().datetime(),
+  // Honeypot — accept any string at schema level so bot doesn't see validation error
+  website: z.string().optional(),
 });
 
 export type BookingInput = z.infer<typeof bookingSchema>;

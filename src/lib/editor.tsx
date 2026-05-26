@@ -9,13 +9,12 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 type Deltas = Record<string, string>;
 
 type EditorContextValue = {
   isEditing: boolean;
-  token: string | null;
   getValue: (path: string, fallback: string) => string;
   setValue: (path: string, value: string) => void;
   pending: Deltas;
@@ -27,30 +26,71 @@ type EditorContextValue = {
 const EditorContext = createContext<EditorContextValue | null>(null);
 
 const STORAGE_KEY = "oraldata-pending-edits";
+const MARKER_COOKIE = "oraldata_editor_active";
+
+function hasEditorMarker(): boolean {
+  if (typeof document === "undefined") return false;
+  return document.cookie
+    .split("; ")
+    .some((c) => c.startsWith(`${MARKER_COOKIE}=`));
+}
 
 export function EditorProvider({ children }: { children: ReactNode }) {
   const params = useSearchParams();
   const pathname = usePathname();
-  const token = params.get("edit");
-  const isEditing = Boolean(token);
+  const router = useRouter();
+  const urlToken = params.get("edit");
 
+  const [isEditing, setIsEditing] = useState<boolean>(false);
   const [pending, setPending] = useState<Deltas>({});
   const [saving, setSaving] = useState(false);
 
-  // Load any unsaved drafts from sessionStorage on mount
+  // Initial marker check (post-hydration)
+  useEffect(() => {
+    setIsEditing(hasEditorMarker());
+  }, []);
+
+  // Exchange ?edit=TOKEN for a httpOnly cookie session, then clean the URL
+  useEffect(() => {
+    if (!urlToken) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/editor/session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: urlToken }),
+          credentials: "same-origin",
+        });
+        if (cancelled) return;
+        if (res.ok) {
+          setIsEditing(true);
+        }
+      } catch {
+        // ignore
+      } finally {
+        if (cancelled) return;
+        const cleanParams = new URLSearchParams(params.toString());
+        cleanParams.delete("edit");
+        const qs = cleanParams.toString();
+        router.replace(qs ? `${pathname}?${qs}` : pathname);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [urlToken, params, pathname, router]);
+
   useEffect(() => {
     if (!isEditing) return;
     try {
       const raw = sessionStorage.getItem(STORAGE_KEY);
-      if (raw) {
-        setPending(JSON.parse(raw));
-      }
+      if (raw) setPending(JSON.parse(raw));
     } catch {
       // ignore
     }
   }, [isEditing]);
 
-  // Persist drafts as user types
   useEffect(() => {
     if (!isEditing) return;
     try {
@@ -61,18 +101,12 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   }, [pending, isEditing]);
 
   const getValue = useCallback(
-    (path: string, fallback: string) => {
-      return pending[path] ?? fallback;
-    },
+    (path: string, fallback: string) => pending[path] ?? fallback,
     [pending],
   );
 
   const setValue = useCallback((path: string, value: string) => {
-    setPending((prev) => {
-      const next = { ...prev };
-      next[path] = value;
-      return next;
-    });
+    setPending((prev) => ({ ...prev, [path]: value }));
   }, []);
 
   const reset = useCallback(() => {
@@ -85,7 +119,6 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const save = useCallback(async () => {
-    if (!token) return { ok: false, error: "no-token" };
     if (Object.keys(pending).length === 0) {
       return { ok: false, error: "no-changes" };
     }
@@ -94,12 +127,11 @@ export function EditorProvider({ children }: { children: ReactNode }) {
       const res = await fetch("/api/save-copy", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, deltas: pending }),
+        body: JSON.stringify({ deltas: pending }),
+        credentials: "same-origin",
       });
       if (!res.ok) {
-        const body = (await res.json().catch(() => ({}))) as {
-          error?: string;
-        };
+        const body = (await res.json().catch(() => ({}))) as { error?: string };
         return { ok: false, error: body.error ?? `http-${res.status}` };
       }
       reset();
@@ -112,11 +144,11 @@ export function EditorProvider({ children }: { children: ReactNode }) {
     } finally {
       setSaving(false);
     }
-  }, [token, pending, reset]);
+  }, [pending, reset]);
 
   const value = useMemo<EditorContextValue>(
-    () => ({ isEditing, token, getValue, setValue, pending, reset, save, saving }),
-    [isEditing, token, getValue, setValue, pending, reset, save, saving],
+    () => ({ isEditing, getValue, setValue, pending, reset, save, saving }),
+    [isEditing, getValue, setValue, pending, reset, save, saving],
   );
 
   return (
@@ -132,7 +164,6 @@ export function useEditor(): EditorContextValue {
   if (!ctx) {
     return {
       isEditing: false,
-      token: null,
       getValue: (_p, fallback) => fallback,
       setValue: () => {},
       pending: {},
@@ -144,7 +175,6 @@ export function useEditor(): EditorContextValue {
   return ctx;
 }
 
-// Avoid circular import — bar component is in a different file.
 import { EditorBar } from "@/components/editor/EditorBar";
 function EditorBarMount() {
   return <EditorBar />;

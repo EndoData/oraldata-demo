@@ -57,14 +57,21 @@ export function BookingModal() {
     setSlotsLoading(true);
     setSlotsError(null);
     setSlots([]);
-    fetch(`/api/availability?date=${ymd}`)
+    const ctrl = new AbortController();
+    fetch(`/api/availability?date=${ymd}`, { signal: ctrl.signal })
       .then((r) => r.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
         setSlots(data.slots ?? []);
       })
-      .catch((err) => setSlotsError(err.message || "Erreur de chargement"))
-      .finally(() => setSlotsLoading(false));
+      .catch((err) => {
+        if (err.name === "AbortError") return;
+        setSlotsError(err.message || "Erreur de chargement");
+      })
+      .finally(() => {
+        if (!ctrl.signal.aborted) setSlotsLoading(false);
+      });
+    return () => ctrl.abort();
   }, [date]);
 
   const today = new Date();
@@ -196,7 +203,7 @@ export function BookingModal() {
                             });
                             setStep("form");
                           }}
-                          className="px-3 py-3 rounded-lg border border-[color:var(--color-line)] text-sm text-ink hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 transition-colors font-medium"
+                          className="min-h-[44px] px-3 py-3 rounded-lg border border-[color:var(--color-line)] text-sm text-ink hover:border-brand-500 hover:bg-brand-50 hover:text-brand-700 transition-colors font-medium"
                         >
                           {s.label}
                         </button>
@@ -345,6 +352,25 @@ function BookingFormStep({
     >
       <input type="hidden" {...register("slotStartISO")} />
       <input type="hidden" {...register("slotEndISO")} />
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          left: "-9999px",
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+        }}
+      >
+        <label htmlFor="hp-website">Website</label>
+        <input
+          id="hp-website"
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          {...register("website")}
+        />
+      </div>
 
       <div className="rounded-lg bg-brand-50 px-4 py-2.5 flex items-center gap-2 text-sm text-ink">
         <Calendar className="w-4 h-4 text-brand-700" />

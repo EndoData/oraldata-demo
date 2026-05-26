@@ -77,11 +77,17 @@ export function CalendarMock({ variant = "hero" }: Props) {
     setLoading(true);
     setSlots([]);
     setSelectedSlot(null);
-    fetch(`/api/availability?date=${selectedDateYMD}`)
+    const ctrl = new AbortController();
+    fetch(`/api/availability?date=${selectedDateYMD}`, { signal: ctrl.signal })
       .then((r) => r.json())
       .then((data) => setSlots(data.slots ?? []))
-      .catch(() => setSlots([]))
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        if (err.name !== "AbortError") setSlots([]);
+      })
+      .finally(() => {
+        if (!ctrl.signal.aborted) setLoading(false);
+      });
+    return () => ctrl.abort();
   }, [selectedDateYMD]);
 
   function isBookable(day: number): boolean {
@@ -182,7 +188,7 @@ export function CalendarMock({ variant = "hero" }: Props) {
               aria-pressed={selected}
               onClick={() => bookable && setSelectedDay(d)}
               disabled={!bookable}
-              className={`aspect-square text-sm rounded-md transition-colors cursor-pointer ${
+              className={`aspect-square min-w-[44px] min-h-[44px] text-sm rounded-md transition-colors cursor-pointer ${
                 selected
                   ? "bg-brand-700 text-white font-medium"
                   : bookable
@@ -229,7 +235,7 @@ export function CalendarMock({ variant = "hero" }: Props) {
                     role="radio"
                     aria-checked={selected}
                     onClick={() => setSelectedSlot(s)}
-                    className={`text-sm py-2 rounded-md border transition-colors cursor-pointer ${
+                    className={`min-h-[44px] text-sm py-2 rounded-md border transition-colors cursor-pointer ${
                       selected
                         ? "border-brand-600 bg-brand-50 text-brand-800 font-medium"
                         : "border-[color:var(--color-line)] text-ink-soft hover:border-brand-300 hover:text-ink"
