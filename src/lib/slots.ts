@@ -9,7 +9,7 @@ const SLOT_HOURS = [
   { startHour: 14, endHour: 19 },
 ];
 const MIN_ADVANCE_HOURS = 24;
-const MAX_ADVANCE_DAYS = 60;
+export const MAX_ADVANCE_DAYS = 60;
 
 export type Slot = {
   startISO: string;

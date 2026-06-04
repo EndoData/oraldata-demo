@@ -14,6 +14,7 @@ import {
   SPECIALTIES,
   type BookingInput,
 } from "@/lib/booking-schema";
+import { MAX_ADVANCE_DAYS } from "@/lib/slots";
 import { useBooking } from "./BookingProvider";
 import { track } from "@/lib/analytics";
 
@@ -76,7 +77,7 @@ export function BookingModal() {
 
   const today = new Date();
   const maxDate = new Date(today);
-  maxDate.setDate(maxDate.getDate() + 14);
+  maxDate.setDate(maxDate.getDate() + MAX_ADVANCE_DAYS);
   const minDate = new Date(today);
   minDate.setDate(minDate.getDate() + 1);
 

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Loader2 } from "lucide-react";
 import { copy } from "@/lib/copy";
+import { MAX_ADVANCE_DAYS } from "@/lib/slots";
 import { useBooking, type PrefilledSlot } from "@/components/booking/BookingProvider";
 
 type Props = {
@@ -49,7 +50,7 @@ export function CalendarMock({ variant = "hero" }: Props) {
 
   const maxDate = useMemo(() => {
     const d = new Date(today);
-    d.setDate(d.getDate() + 14);
+    d.setDate(d.getDate() + MAX_ADVANCE_DAYS);
     return d;
   }, [today]);
 
