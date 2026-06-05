@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { bookingSchema } from "@/lib/booking-schema";
 import {
   createEvent,
@@ -7,6 +7,7 @@ import {
 } from "@/lib/google-calendar";
 import { createLead, hasRecentLeadByEmail } from "@/lib/airtable";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { notifyNewLead } from "@/lib/notifications";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -113,8 +114,9 @@ export async function POST(request: Request) {
     );
   }
 
+  let leadResult: Awaited<ReturnType<typeof createLead>> | null = null;
   try {
-    await createLead({
+    leadResult = await createLead({
       nom: input.nom,
       prenom: input.prenom,
       email: input.email,
@@ -150,6 +152,22 @@ export async function POST(request: Request) {
       { status: 502 },
     );
   }
+
+  after(() =>
+    notifyNewLead({
+      prenom: input.prenom,
+      nom: input.nom,
+      email: input.email,
+      telephone: input.telephone,
+      specialite: input.specialite,
+      cabinet: input.cabinet || undefined,
+      ville: input.ville || undefined,
+      message: input.message || undefined,
+      slotStartISO: input.slotStartISO,
+      meetLink: eventResult.meetLink,
+      airtableRecordId: leadResult?.recordId ?? null,
+    }),
+  );
 
   return NextResponse.json({
     success: true,
