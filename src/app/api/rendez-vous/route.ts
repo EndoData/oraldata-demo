@@ -105,6 +105,9 @@ export async function POST(request: Request) {
       endISO: input.slotEndISO,
       attendeeEmail: input.email,
       attendeeName: `${input.prenom} ${input.nom}`,
+      extraAttendees: process.env.ORALDATA_NOTIFICATION_EMAIL
+        ? [process.env.ORALDATA_NOTIFICATION_EMAIL]
+        : undefined,
     });
   } catch (error) {
     console.error("[rendez-vous] calendar error:", error);

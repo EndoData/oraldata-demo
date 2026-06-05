@@ -65,6 +65,7 @@ export type CreateEventInput = {
   endISO: string;
   attendeeEmail: string;
   attendeeName: string;
+  extraAttendees?: string[];
 };
 
 export type CreateEventResult = {
@@ -84,7 +85,13 @@ export async function createEvent(
     description: input.description,
     start: { dateTime: input.startISO, timeZone: "Europe/Paris" },
     end: { dateTime: input.endISO, timeZone: "Europe/Paris" },
-    attendees: [{ email: input.attendeeEmail, displayName: input.attendeeName }],
+    attendees: [
+      { email: input.attendeeEmail, displayName: input.attendeeName },
+      ...(input.extraAttendees ?? []).map((email) => ({
+        email,
+        responseStatus: "accepted",
+      })),
+    ],
     conferenceData: {
       createRequest: {
         requestId,
