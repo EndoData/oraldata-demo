@@ -50,7 +50,7 @@ export function EditableImage({ path, fallback, alt, className, ...rest }: Props
   }
 
   return (
-    <div className="relative group">
+    <div className={`relative group ${className ?? ""}`}>
       <Image src={src} alt={alt} className={className} {...rest} />
       <div className="absolute inset-0 rounded-[inherit] outline-1 outline-dashed outline-amber-400 outline-offset-2 pointer-events-none" />
       <button

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, Palette, Save, Undo2, X } from "lucide-react";
+import { Loader2, LogOut, Palette, Save, Undo2, X } from "lucide-react";
 import { useEditor } from "@/lib/editor";
 import { ColorPickerPanel } from "./ColorPickerPanel";
 
@@ -123,10 +123,41 @@ function FloatingPaletteToggle({ onClick }: { onClick: () => void }) {
 }
 
 function EditorIndicator() {
+  const [exiting, setExiting] = useState(false);
+
+  async function handleExit() {
+    if (exiting) return;
+    setExiting(true);
+    try {
+      await fetch("/api/editor/session", {
+        method: "DELETE",
+        credentials: "same-origin",
+      });
+    } catch {
+      // ignore — we'll still reload
+    }
+    try {
+      sessionStorage.removeItem("oraldata-pending-edits");
+    } catch {
+      // ignore
+    }
+    window.location.replace("/");
+  }
+
   return (
     <div className="fixed top-4 left-4 z-[60] flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-100 border border-amber-300 text-amber-800 text-xs font-medium shadow-sm">
       <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
       Mode édition · cliquez sur un texte pour le modifier
+      <button
+        type="button"
+        onClick={handleExit}
+        disabled={exiting}
+        className="ml-2 inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-200 hover:bg-amber-300 text-[10px] font-medium cursor-pointer disabled:opacity-50 disabled:cursor-wait"
+        title="Quitter le mode édition (revenir au site normal sans le ?edit=)"
+      >
+        <LogOut className="w-3 h-3" />
+        Quitter
+      </button>
     </div>
   );
 }
