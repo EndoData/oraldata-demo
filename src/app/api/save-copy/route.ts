@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 const FILE_PATH = "src/lib/copy.json";
 
 type SavePayload = {
-  deltas?: Record<string, string>;
+  deltas?: Record<string, unknown>;
 };
 
 function getEnv(key: string): string | null {
@@ -22,7 +22,7 @@ function getEnv(key: string): string | null {
 function setByPath(
   obj: Record<string, unknown>,
   path: string,
-  value: string,
+  value: unknown,
 ): void {
   const segments = path.split(".").flatMap((s) => {
     const m = s.match(/^([^\[]+)((?:\[\d+\])*)$/);

@@ -11,12 +11,12 @@ import {
 } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-type Deltas = Record<string, string>;
+type Deltas = Record<string, unknown>;
 
 type EditorContextValue = {
   isEditing: boolean;
-  getValue: (path: string, fallback: string) => string;
-  setValue: (path: string, value: string) => void;
+  getValue: <T = unknown>(path: string, fallback: T) => T;
+  setValue: (path: string, value: unknown) => void;
   pending: Deltas;
   reset: () => void;
   save: () => Promise<{ ok: boolean; error?: string }>;
@@ -101,11 +101,12 @@ export function EditorProvider({ children }: { children: ReactNode }) {
   }, [pending, isEditing]);
 
   const getValue = useCallback(
-    (path: string, fallback: string) => pending[path] ?? fallback,
+    <T,>(path: string, fallback: T): T =>
+      (pending[path] as T | undefined) ?? fallback,
     [pending],
   );
 
-  const setValue = useCallback((path: string, value: string) => {
+  const setValue = useCallback((path: string, value: unknown) => {
     setPending((prev) => ({ ...prev, [path]: value }));
   }, []);
 
@@ -164,7 +165,7 @@ export function useEditor(): EditorContextValue {
   if (!ctx) {
     return {
       isEditing: false,
-      getValue: (_p, fallback) => fallback,
+      getValue: <T,>(_p: string, fallback: T): T => fallback,
       setValue: () => {},
       pending: {},
       reset: () => {},
@@ -178,4 +179,21 @@ export function useEditor(): EditorContextValue {
 import { EditorBar } from "@/components/editor/EditorBar";
 function EditorBarMount() {
   return <EditorBar />;
+}
+
+export type AccentTheme = { base: string; light: string; dark: string };
+
+export function useList<T>(path: string, fallback: T[]): T[] {
+  const { getValue } = useEditor();
+  return getValue<T[]>(path, fallback);
+}
+
+export function useImage(path: string, fallback: string): string {
+  const { getValue } = useEditor();
+  return getValue<string>(path, fallback);
+}
+
+export function useAccentTheme(fallback: AccentTheme): AccentTheme {
+  const { getValue } = useEditor();
+  return getValue<AccentTheme>("theme.accent", fallback);
 }

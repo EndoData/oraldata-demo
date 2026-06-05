@@ -1,4 +1,14 @@
 {
+  "theme": {
+    "accent": {
+      "base": "#c9a227",
+      "light": "#e8c97a",
+      "dark": "#8f6f12"
+    }
+  },
+  "brand": {
+    "logo": "/brand/oraldata-logo.png"
+  },
   "nav": {
     "links": [
       {

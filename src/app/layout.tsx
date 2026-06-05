@@ -7,6 +7,7 @@ import { BookingProvider } from "@/components/booking/BookingProvider";
 import { BookingModal } from "@/components/booking/BookingModal";
 import { ConsentBanner } from "@/components/consent/ConsentBanner";
 import { GTM_ID } from "@/lib/analytics";
+import { copy } from "@/lib/copy";
 import "./globals.css";
 
 const sans = Montserrat({
@@ -54,6 +55,11 @@ export default function RootLayout({
       className={`${sans.variable} ${display.variable} h-full antialiased`}
     >
       <head>
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `:root{--color-accent-300:${copy.theme.accent.light};--color-accent-500:${copy.theme.accent.base};--color-accent-700:${copy.theme.accent.dark};}`,
+          }}
+        />
         <Script id="dataLayer-init" strategy="beforeInteractive">
           {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}

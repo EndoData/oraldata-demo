@@ -4,12 +4,17 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
+import { useEditor, useList } from "@/lib/editor";
 import { E } from "@/components/editor/EditableText";
+import { EditableImage } from "@/components/editor/EditableImage";
+import { EditableList } from "@/components/editor/EditableList";
 
 type Member = (typeof copy.team.members)[number];
 
 export function FoundersGrid() {
   const t = copy.team;
+  const { isEditing } = useEditor();
+  const members = useList<Member>("team.members", t.members);
   return (
     <section id="team" className="py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -37,6 +42,39 @@ export function FoundersGrid() {
           </motion.p>
         </motion.div>
 
+        {isEditing ? (
+          <div className="mt-16">
+            <EditableList<Member>
+              path="team.members"
+              items={members}
+              containerAs="ul"
+              containerClassName="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"
+              itemAs="li"
+              itemClassName="group text-center"
+              renderItem={(m, i) => (
+                <>
+                  <div className="relative mx-auto w-28 h-28 lg:w-32 lg:h-32">
+                    <div
+                      className={`absolute inset-0 rounded-full bg-gradient-to-br ${m.tint}`}
+                    />
+                    <div className="absolute inset-[3px] rounded-full bg-surface overflow-hidden flex items-end justify-center">
+                      <MemberAvatar member={m} index={i} editable />
+                    </div>
+                    <div className="absolute -bottom-1 right-1 w-7 h-7 rounded-full bg-brand-700 text-white text-[10px] font-medium flex items-center justify-center shadow-[var(--shadow-soft)]">
+                      {m.initials}
+                    </div>
+                  </div>
+                  <div className="mt-4 font-medium text-ink text-sm">
+                    <E path={`team.members[${i}].name`} multiline={false}>{m.name}</E>
+                  </div>
+                  <div className="mt-1 text-xs text-ink-mute">
+                    <E path={`team.members[${i}].role`} multiline={false}>{m.role}</E>
+                  </div>
+                </>
+              )}
+            />
+          </div>
+        ) : (
         <motion.ul
           initial="hidden"
           whileInView="visible"
@@ -44,7 +82,7 @@ export function FoundersGrid() {
           variants={stagger(0.08)}
           className="mt-16 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6"
         >
-          {t.members.map((m, i) => (
+          {members.map((m, i) => (
             <motion.li
               key={m.name}
               variants={fadeUp}
@@ -58,7 +96,7 @@ export function FoundersGrid() {
                   className={`absolute inset-0 rounded-full bg-gradient-to-br ${m.tint} group-hover:scale-[1.03] transition-transform`}
                 />
                 <div className="absolute inset-[3px] rounded-full bg-surface overflow-hidden flex items-end justify-center">
-                  <MemberAvatar member={m} />
+                  <MemberAvatar member={m} index={i} />
                 </div>
                 <div className="absolute -bottom-1 right-1 w-7 h-7 rounded-full bg-brand-700 text-white text-[10px] font-medium flex items-center justify-center shadow-[var(--shadow-soft)]">
                   {m.initials}
@@ -73,13 +111,35 @@ export function FoundersGrid() {
             </motion.li>
           ))}
         </motion.ul>
+        )}
       </div>
     </section>
   );
 }
 
-function MemberAvatar({ member }: { member: Member }) {
+function MemberAvatar({
+  member,
+  index,
+  editable,
+}: {
+  member: Member;
+  index: number;
+  editable?: boolean;
+}) {
   if ("image" in member && member.image) {
+    if (editable) {
+      return (
+        <EditableImage
+          path={`team.members[${index}].image`}
+          fallback={member.image}
+          alt={member.name}
+          width={256}
+          height={256}
+          className="w-full h-full object-cover"
+          sizes="(min-width: 1024px) 128px, 112px"
+        />
+      );
+    }
     return (
       <Image
         src={member.image}

@@ -5,19 +5,25 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce, easeOut } from "@/lib/motion";
+import { useEditor, useList } from "@/lib/editor";
 import { E } from "@/components/editor/EditableText";
+import { EditableList } from "@/components/editor/EditableList";
 
 const PER_PAGE = 3;
+
+type TestimonialItem = (typeof copy.testimonials.items)[number];
 
 export function Testimonials() {
   const t = copy.testimonials;
   const reducedMotion = useReducedMotion();
   const sectionId = useId();
   const [page, setPage] = useState(0);
+  const { isEditing } = useEditor();
+  const items = useList<TestimonialItem>("testimonials.items", t.items);
 
-  const pageCount = Math.max(1, Math.ceil(t.items.length / PER_PAGE));
+  const pageCount = Math.max(1, Math.ceil(items.length / PER_PAGE));
   const start = page * PER_PAGE;
-  const visible = t.items.slice(start, start + PER_PAGE);
+  const visible = items.slice(start, start + PER_PAGE);
 
   function go(delta: number) {
     setPage((p) => (p + delta + pageCount) % pageCount);
@@ -70,6 +76,40 @@ export function Testimonials() {
           </motion.div>
         </motion.div>
 
+        {isEditing ? (
+          <div className="mt-16">
+            <EditableList<TestimonialItem>
+              path="testimonials.items"
+              items={items}
+              containerAs="ul"
+              containerClassName="grid md:grid-cols-3 gap-6"
+              itemAs="li"
+              itemClassName="group relative rounded-2xl bg-surface p-8 border hairline border-[color:var(--color-line)] shadow-[var(--shadow-soft)]"
+              renderItem={(item, globalIndex) => (
+                <>
+                  <Quote className="w-7 h-7 text-brand-300 mb-4" strokeWidth={1.5} />
+                  <p className="font-serif text-lg text-ink leading-relaxed tracking-tight">
+                    {"« "}
+                    <E path={`testimonials.items[${globalIndex}].quote`}>
+                      {item.quote}
+                    </E>
+                    {" »"}
+                  </p>
+                  <div className="mt-6 pt-6 border-t hairline border-t-[color:var(--color-line)]">
+                    <div className="font-medium text-ink text-sm">
+                      <E
+                        path={`testimonials.items[${globalIndex}].author`}
+                        multiline={false}
+                      >
+                        {item.author}
+                      </E>
+                    </div>
+                  </div>
+                </>
+              )}
+            />
+          </div>
+        ) : (
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -208,6 +248,7 @@ export function Testimonials() {
             </button>
           </div>
         </motion.div>
+        )}
       </div>
     </section>
   );

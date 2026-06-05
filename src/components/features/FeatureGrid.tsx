@@ -14,7 +14,11 @@ import {
 } from "lucide-react";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce } from "@/lib/motion";
+import { useEditor, useList } from "@/lib/editor";
 import { E } from "@/components/editor/EditableText";
+import { EditableList } from "@/components/editor/EditableList";
+
+type FeatureItem = (typeof copy.features.items)[number];
 
 const iconMap: Record<string, LucideIcon> = {
   FileText,
@@ -29,6 +33,8 @@ const iconMap: Record<string, LucideIcon> = {
 
 export function FeatureGrid() {
   const f = copy.features;
+  const { isEditing } = useEditor();
+  const items = useList<FeatureItem>("features.items", f.items);
   return (
     <section id="features" className="py-16 lg:py-20">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
@@ -58,6 +64,34 @@ export function FeatureGrid() {
           ) : null}
         </motion.div>
 
+        {isEditing ? (
+          <div className="mt-14">
+            <EditableList<FeatureItem>
+              path="features.items"
+              items={items}
+              containerAs="ul"
+              containerClassName="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
+              itemAs="li"
+              itemClassName="group relative rounded-2xl bg-surface p-7 border hairline border-[color:var(--color-line)]"
+              renderItem={(item, i) => {
+                const Icon = iconMap[item.icon] ?? FileText;
+                return (
+                  <>
+                    <div className="w-11 h-11 rounded-xl bg-brand-50 flex items-center justify-center mb-5">
+                      <Icon className="w-5 h-5 text-brand-700" strokeWidth={1.75} />
+                    </div>
+                    <h3 className="font-serif text-xl text-ink tracking-tight mb-2">
+                      <E path={`features.items[${i}].title`} multiline={false}>{item.title}</E>
+                    </h3>
+                    <p className="text-sm text-ink-soft leading-relaxed">
+                      <E path={`features.items[${i}].body`}>{item.body}</E>
+                    </p>
+                  </>
+                );
+              }}
+            />
+          </div>
+        ) : (
         <motion.ul
           initial="hidden"
           whileInView="visible"
@@ -65,7 +99,7 @@ export function FeatureGrid() {
           variants={stagger(0.06)}
           className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"
         >
-          {f.items.map((item, i) => {
+          {items.map((item, i) => {
             const Icon = iconMap[item.icon] ?? FileText;
             return (
               <motion.li
@@ -88,6 +122,7 @@ export function FeatureGrid() {
             );
           })}
         </motion.ul>
+        )}
       </div>
     </section>
   );

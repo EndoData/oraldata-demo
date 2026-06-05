@@ -5,7 +5,11 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Plus } from "lucide-react";
 import { copy } from "@/lib/copy";
 import { fadeUp, stagger, viewportOnce, easeOut } from "@/lib/motion";
+import { useEditor, useList } from "@/lib/editor";
 import { E } from "@/components/editor/EditableText";
+import { EditableList } from "@/components/editor/EditableList";
+
+type FaqItem = (typeof copy.faq.items)[number];
 
 export function FAQ() {
   const f = copy.faq;
@@ -13,13 +17,15 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const buttonRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const sectionId = useId();
+  const { isEditing } = useEditor();
+  const items = useList<FaqItem>("faq.items", f.items);
 
   function toggle(i: number) {
     setOpenIndex((current) => (current === i ? null : i));
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLButtonElement>, i: number) {
-    const total = f.items.length;
+    const total = items.length;
     if (event.key === "ArrowDown") {
       event.preventDefault();
       buttonRefs.current[(i + 1) % total]?.focus();
@@ -64,6 +70,28 @@ export function FAQ() {
           ) : null}
         </motion.div>
 
+        {isEditing ? (
+          <EditableList<FaqItem>
+            path="faq.items"
+            items={items}
+            containerAs="ul"
+            containerClassName="space-y-3"
+            itemAs="li"
+            itemClassName="group rounded-2xl border hairline bg-surface-2 border-[color:var(--color-line)]"
+            renderItem={(item, i) => (
+              <div className="p-5 lg:p-6 space-y-3">
+                <div className="text-sm lg:text-base font-medium text-ink leading-snug">
+                  <E path={`faq.items[${i}].question`} multiline={false}>
+                    {item.question}
+                  </E>
+                </div>
+                <div className="text-sm lg:text-base text-ink-soft leading-relaxed">
+                  <E path={`faq.items[${i}].answer`}>{item.answer}</E>
+                </div>
+              </div>
+            )}
+          />
+        ) : (
         <motion.ul
           initial="hidden"
           whileInView="visible"
@@ -71,7 +99,7 @@ export function FAQ() {
           variants={stagger(0.06)}
           className="space-y-3"
         >
-          {f.items.map((item, i) => {
+          {items.map((item, i) => {
             const isOpen = openIndex === i;
             const panelId = `${sectionId}-panel-${i}`;
             const buttonId = `${sectionId}-button-${i}`;
@@ -169,6 +197,7 @@ export function FAQ() {
             );
           })}
         </motion.ul>
+        )}
       </div>
     </section>
   );

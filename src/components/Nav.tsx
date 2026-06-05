@@ -1,9 +1,9 @@
 "use client";
 
-import Image from "next/image";
 import { copy } from "@/lib/copy";
 import { motion } from "framer-motion";
 import { E } from "@/components/editor/EditableText";
+import { EditableImage } from "@/components/editor/EditableImage";
 import { useBooking } from "@/components/booking/BookingProvider";
 import { track } from "@/lib/analytics";
 
@@ -18,8 +18,9 @@ export function Nav() {
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-10 h-16 flex items-center justify-between">
         <a href="#top" className="flex items-center" aria-label="OralData — accueil">
-          <Image
-            src="/brand/oraldata-logo.png"
+          <EditableImage
+            path="brand.logo"
+            fallback={copy.brand.logo}
             alt="OralData"
             width={160}
             height={64}
