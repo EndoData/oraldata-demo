@@ -106,7 +106,9 @@ export async function POST(request: Request) {
       attendeeEmail: input.email,
       attendeeName: `${input.prenom} ${input.nom}`,
       extraAttendees: process.env.ORALDATA_NOTIFICATION_EMAIL
-        ? [process.env.ORALDATA_NOTIFICATION_EMAIL]
+        ? process.env.ORALDATA_NOTIFICATION_EMAIL.split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
         : undefined,
     });
   } catch (error) {
