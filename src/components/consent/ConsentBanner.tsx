@@ -26,19 +26,17 @@ function writeConsent(choice: ConsentChoice): void {
 
 function pushConsentUpdate(choice: ConsentChoice): void {
   if (typeof window === "undefined") return;
-  window.dataLayer = window.dataLayer || [];
+  window.dataLayer = window.dataLayer ?? [];
+  // Consent Mode v2 only recognises gtag()'s `arguments` object — pushing a plain
+  // array (the previous implementation) is silently ignored, so consent never
+  // actually updated. Reuse the global gtag() shim defined in layout.tsx.
+  window.gtag?.("consent", "update", {
+    ad_storage: choice,
+    ad_user_data: choice,
+    ad_personalization: choice,
+    analytics_storage: choice,
+  });
   window.dataLayer.push({ event: "consent_update", consent: choice });
-  // gtag('consent','update',{...}) format pushed as array (Consent Mode v2)
-  window.dataLayer.push([
-    "consent",
-    "update",
-    {
-      ad_storage: choice,
-      ad_user_data: choice,
-      ad_personalization: choice,
-      analytics_storage: choice,
-    },
-  ]);
 }
 
 export function ConsentBanner() {

@@ -63,12 +63,12 @@ export default function RootLayout({
         <Script id="dataLayer-init" strategy="beforeInteractive">
           {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
-// Consent Mode v2 — denied by default until user opts in
+// Consent Mode v2 — analytics granted by default (opt-out); ads stay denied until opt-in
 gtag('consent', 'default', {
   ad_storage: 'denied',
   ad_user_data: 'denied',
   ad_personalization: 'denied',
-  analytics_storage: 'denied',
+  analytics_storage: 'granted',
   functionality_storage: 'granted',
   security_storage: 'granted',
   wait_for_update: 500

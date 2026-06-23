@@ -3,6 +3,7 @@ export const GTM_ID = "GTM-5TN647VF";
 declare global {
   interface Window {
     dataLayer?: Array<Record<string, unknown> | unknown[]>;
+    gtag?: (...args: unknown[]) => void;
   }
 }
 
